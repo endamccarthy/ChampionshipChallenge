@@ -1,0 +1,48 @@
+/* ***************************************************** */
+/*
+/* SETUP
+/*
+/* ***************************************************** */
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Variables (fonts imported in link in the base template) */
+:root {
+  --font-01: "Raleway", sans-serif;
+  --background-01: #ebeff5;
+  --background-02: #c5cbd3;
+}
+
+
+/* ***************************************************** */
+/*
+/* GENERAL STYLE
+/*
+/* ***************************************************** */
+
+body {
+  font-family: var(--font-01);
+  background-color: var(--background-01);
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 0px;
+  padding-top: 10px;
+  font-size: 0.8em;
+  background-color: var(--background-02);
+}
+
+.centered {
+  float: none;
+  margin: 0 auto;
+}
