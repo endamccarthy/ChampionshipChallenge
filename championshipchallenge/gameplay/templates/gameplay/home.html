@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-6 mb-3">
+  <div class="col-md-6">
     <div class="card card-body">
       <p>Gortnahoe-Glengoole GAA Club Presents:</p>
       <h1><b>Championship Challenge</b></h1>
@@ -20,13 +20,30 @@
         <li>Third Prize - €100</li>
       </ul>
       <h5>Entry Fee:</h5>
-      <p>€10 (you can enter as many times as you like)</p>
+      <p>€10 <small>(you can enter as many times as you like)</small></p>
     </div>
   </div>
-  <div class="col-md-6 mb-3">
+  <div class="col-md-6">
     <div class="card card-body">
-      <p>hello!</p>
+      <h3>Rules</h3>
+      <hr>
+      <p><b>Pick a winner or draw for each game in the Munster and Leinster championship round robin.</b></p>
+      <p><b>Also pick the finalists, the champions and the top scorer from play in both championships.</b></p>
+      <ul>
+        <li>Predict a win - <b>5 points</b> per game</li>
+        <li>Predict a draw - <b>10 points</b> per game</li>
+        <li>Predict finalists - <b>15 points</b> per finalist</li>
+        <li>Predict champions - <b>25 points</b> per champion</li>
+        <li>Predict top scorer and amount scored (from play) - <b>20 points</b> per correct player*</li>
+        <small>*In case of a tie break, the amount scored will also be taken into account</small>
+      </ul>
     </div>
+    {% if user.is_authenticated == False %}
+    <div class="card card-body">
+      <h5><a href="{% url 'account_signup' %}">Register</a> now to enter your prediction.</h5>
+      <h6>Or <a href="{% url 'account_login' %}">Login</a> if you already have an account.</h6>
+    </div>
+    {% endif %}
   </div>
 </div>
 

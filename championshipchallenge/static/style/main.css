@@ -13,7 +13,8 @@
 
 /* Variables (fonts imported in link in the base template) */
 :root {
-  --font-01: "Raleway", sans-serif;
+  --font-01: 'Raleway', sans-serif;
+  --font-02: 'Roboto', sans-serif;
   --background-01: #ebeff5;
   --background-02: #c5cbd3;
 }
@@ -26,7 +27,7 @@
 /* ***************************************************** */
 
 body {
-  font-family: var(--font-01);
+  font-family: var(--font-02);
   background-color: var(--background-01);
 }
 
@@ -45,4 +46,8 @@ body {
 .centered {
   float: none;
   margin: 0 auto;
+}
+
+.card-body {
+  margin-bottom: 15px;
 }

@@ -1,10 +1,16 @@
 from django.shortcuts import render
-from django.contrib import messages
+# from django.contrib import messages
 
 
 def home(request):
-  messages.success(request, 'Your account has been created! You are now able to login')
   context = {
-    'title': 'Home'
+    'title': 'Championship Challenge - Home'
   }
   return render(request, 'gameplay/home.html', context)
+
+
+def error_page(request):
+  context = {
+    'title': 'Error'
+  }
+  return render(request, 'gameplay/error_page.html', context)
