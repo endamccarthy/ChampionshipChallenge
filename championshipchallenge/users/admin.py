@@ -2,7 +2,10 @@ from .models import CustomUser
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.decorators import login_required
 
+
+admin.site.login = login_required(admin.site.login)
 
 # Custom admin view for the user account
 @admin.register(CustomUser)
