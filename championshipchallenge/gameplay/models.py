@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils import timezone
-# from django.contrib.auth import get_user_model
-# from django.contrib.auth.models import User
+from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db.models import F
+from users.models import CustomUser
 
 
 class Region(models.TextChoices):
@@ -36,17 +37,15 @@ class Round(models.TextChoices):
   SEMI = 'S', _('Semi')
   Final = 'F', _('Final')
 
-# def get_sentinel_user():
-#   return get_user_model().objects.get_or_create(username='deleted')[0]
+
+class Prediction(models.TextChoices):
+  TEAM_A_WIN = 'A', _('Team A Win')
+  TEAM_B_WIN = 'B', _('Team B Win')
+  DRAW = 'D', _('Draw')
 
 
-class Entry(models.Model):
-  # user = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
-  points = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-  date_posted = models.DateTimeField(default=timezone.now)
-
-  # def __str__(self):
-  #   return self.user.get_username()
+def get_sentinel_user():
+  return get_user_model().objects.get_or_create(username='deleted')[0]
 
 
 class Team(models.Model):
@@ -60,7 +59,7 @@ class Team(models.Model):
 class Player(models.Model):
   first_name = models.CharField(max_length=100, null=False, blank=False)
   last_name = models.CharField(max_length=100, null=False, blank=False)
-  team = models.ForeignKey(Team, on_delete=models.CASCADE, null=False, blank=False, related_name='team')
+  team = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='team')
   sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
 
   def __str__(self):
@@ -68,16 +67,16 @@ class Player(models.Model):
 
 
 class Fixture(models.Model):
-  team_A = models.ForeignKey(Team, on_delete=models.CASCADE, null=False, blank=False, related_name='team_A')
-  team_B = models.ForeignKey(Team, on_delete=models.CASCADE, null=False, blank=False, related_name='team_B')
+  team_A = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='team_A')
+  team_B = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='team_B')
   date = models.DateTimeField(null=True, blank=True)
   sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
   region = models.CharField(max_length=100, null=False, blank=False, choices=Region.choices)
   fixture_round = models.CharField(max_length=100, null=False, blank=False, choices=Round.choices)
-  location = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, blank=True, related_name='location')
+  location = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='location')
 
   def clean(self):
-    if self.team_A == self.team_B:
+    if (self.team_A != None and self.team_B != None) and self.team_A == self.team_B:
       raise ValidationError(_('Teams must be different'))
 
   def __str__(self):
@@ -85,7 +84,7 @@ class Fixture(models.Model):
 
 
 class Result(models.Model):
-  fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE, null=False, blank=False, related_name='fixture')
+  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='fixture')
   team_A_goals = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_A_points = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_B_goals = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
@@ -96,8 +95,8 @@ class Result(models.Model):
 
 
 class Score(models.Model):
-  player = models.ForeignKey(Player, on_delete=models.CASCADE, null=False, blank=False, related_name='player')
-  fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE, null=False, blank=False, related_name='score_fixture')
+  player = models.ForeignKey(Player, on_delete=models.PROTECT, null=False, blank=False, related_name='player')
+  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='score_fixture')
   goals_open_play = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
   goals_placed_balls = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
   points_open_play = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
@@ -105,3 +104,36 @@ class Score(models.Model):
 
   def __str__(self):
     return f'{self.player.first_name} {self.player.last_name}; {self.fixture}; {self.goals_open_play + self.goals_placed_balls}-{self.points_open_play + self.points_placed_balls}'
+
+
+class Prediction(models.Model):
+  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='prediction_fixture')
+  prediction = models.CharField(max_length=100, null=False, blank=False, choices=Prediction.choices)
+
+  def __str__(self):
+    return f'{self.fixture}, {self.get_prediction_display()}'
+    
+
+class Participants(models.Model):
+  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='participants_fixture')
+  team_A = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='participants_team_A')
+  team_B = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='participants_team_B')
+
+  def clean(self):
+    if self.team_A == self.team_B:
+      raise ValidationError(_('Teams must be different'))
+
+  def __str__(self):
+    return f'{self.fixture.get_region_display()} {self.fixture.get_fixture_round_display()}: {self.team_A} - {self.team_B}'
+
+
+class Entry(models.Model):
+  user = models.ForeignKey(CustomUser, on_delete=models.SET(get_sentinel_user), null=False, blank=False, related_name='entry_user')
+  datetime = models.DateTimeField(default=timezone.now, null=False, blank=True)
+  points = models.IntegerField(default=0, validators=[MinValueValidator(0)], null=False, blank=True)
+  paid = models.BooleanField(default=False, null=False, blank=True)
+  predictions = models.ManyToManyField(Prediction, related_name = 'entry_prediction')
+  participants = models.ManyToManyField(Participants, related_name = 'entry_participants')
+
+  def __str__(self):
+    return f'{self.user.get_username()}'

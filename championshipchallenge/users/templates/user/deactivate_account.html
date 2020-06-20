@@ -9,16 +9,14 @@
         <form method="POST">
           {% csrf_token %}
           <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Account Details</legend>
-            {{ form|crispy }}
+            <legend class="border-bottom mb-4">{{ user.email }}</legend>
+            <p>Are you sure you want to deactivate your account?</p>
           </fieldset>
           <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Update</button>
+            <button class="btn btn-outline-danger" type="submit">Yes</button>
+            <input class="btn btn-info ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
           </div>
         </form>
-        <small class="text-muted">
-          <a class="text-danger" href="{% url 'deactivate_account' %}">Deactivate Account</a>
-        </small>
 
     </div>
   </div>

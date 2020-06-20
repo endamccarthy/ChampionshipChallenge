@@ -25,6 +25,7 @@ urlpatterns = [
   path('admin/', admin.site.urls),
   path('', include('gameplay.urls')),
   path('user_details/', user_views.user_details, name='user_details'),
+  path('deactivate_account/', user_views.deactivate_account, name='deactivate_account'),
 
   # override all these views to be redirected elsewhere
   path('accounts/email/', RedirectView.as_view(url=reverse_lazy('gameplay_error_page'), permanent=False)),

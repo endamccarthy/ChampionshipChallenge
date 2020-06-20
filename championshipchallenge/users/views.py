@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserUpdateForm
 
+
 @login_required
 def user_details(request):
   if request.method == 'POST':
@@ -19,4 +20,19 @@ def user_details(request):
     'form': form
   }
   return render(request, 'user/user_details.html', context)
+
+
+@login_required
+def deactivate_account(request):
+  if request.method == 'POST':
+    user = request.user
+    user.is_active = False
+    user.save()
+    messages.success(request, f'Your account has been deactivated')
+    return redirect('gameplay_home')
+
+  context = {
+    'title': 'Deactivate Account',
+  }
+  return render(request, 'user/deactivate_account.html', context)
 
