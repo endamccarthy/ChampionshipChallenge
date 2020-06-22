@@ -5,8 +5,13 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.db.models import F
+from django.db.models import F, Q
 from users.models import CustomUser
+
+
+class Sport(models.TextChoices):
+  HURLING = 'H', _('Hurling')
+  FOOTBALL = 'F', _('Football')
 
 
 class Region(models.TextChoices):
@@ -17,25 +22,20 @@ class Region(models.TextChoices):
   ALL_IRELAND = 'A', _('All-Ireland')
 
 
-class Sport(models.TextChoices):
-  HURLING = 'H', _('Hurling')
-  FOOTBALL = 'F', _('Football')
-
-
 class Round(models.TextChoices):
-  FIRST = '1', _('First')
-  SECOND = '2', _('Second')
-  THIRD = '3', _('Third')
-  FOURTH = '4', _('Fourth')
-  FIFTH = '5', _('Fifth')
-  SIXTH = '6', _('Sixth')
-  SEVENTH = '7', _('Seventh')
-  EIGHTH = '8', _('Eighth')
-  NINTH = '9', _('Ninth')
-  TENTH = '10', _('Tenth')
-  QUARTER = 'Q', _('Quarter')
-  SEMI = 'S', _('Semi')
-  Final = 'F', _('Final')
+  FIRST = '1', _('First Round')
+  SECOND = '2', _('Second Round')
+  THIRD = '3', _('Third Round')
+  FOURTH = '4', _('Fourth Round')
+  FIFTH = '5', _('Fifth Round')
+  SIXTH = '6', _('Sixth Round')
+  SEVENTH = '7', _('Seventh Round')
+  EIGHTH = '8', _('Eighth Round')
+  NINTH = '9', _('Ninth Round')
+  TENTH = '10', _('Tenth Round')
+  QUARTER = 'Q', _('Quarter Final')
+  SEMI = 'S', _('Semi Final')
+  FINAL = 'F', _('Final')
 
 
 class Prediction(models.TextChoices):
@@ -61,37 +61,81 @@ class Player(models.Model):
   last_name = models.CharField(max_length=100, null=False, blank=False)
   team = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='team')
   sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
+  active = models.BooleanField(default=True, null=False, blank=False)
+
+  class Meta:
+    constraints = [
+      models.UniqueConstraint(fields=['first_name', 'last_name', 'team', 'sport'], name='unique player')
+    ]
 
   def __str__(self):
-    return f'{self.get_sport_display()}, {self.team}, {self.first_name} {self.last_name}'
+    return f'{self.get_sport_display()} - {self.team} - {self.first_name} {self.last_name}'
 
 
 class Fixture(models.Model):
   team_A = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='team_A')
   team_B = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='team_B')
-  date = models.DateTimeField(null=True, blank=True)
+  datetime = models.DateTimeField(null=False, blank=False)
   sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
   region = models.CharField(max_length=100, null=False, blank=False, choices=Region.choices)
   fixture_round = models.CharField(max_length=100, null=False, blank=False, choices=Round.choices)
   location = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='location')
 
+  class Meta:
+    constraints = [
+      models.UniqueConstraint(fields=['team_A', 'team_B', 'datetime', 'sport'], name='unique fixture')
+    ]
+
   def clean(self):
-    if (self.team_A != None and self.team_B != None) and self.team_A == self.team_B:
-      raise ValidationError(_('Teams must be different'))
+    if (self.fixture_round in ['Q', 'S', 'F']):
+      fixture_filter_1 = Fixture.objects.filter(
+        sport=self.sport, 
+        region=self.region,
+        fixture_round=self.fixture_round,
+        datetime__year=self.datetime.date().year
+      ).exclude(pk=self.pk)
+      if (fixture_filter_1.count() >= 1):
+        raise ValidationError(_('This knock out fixture has already been created'))
+    else:
+      if (self.team_A is None or self.team_B is None):
+        raise ValidationError(_(f'Teams are required for round fixtures'))
+      else:
+        fixture_filter_2 = Fixture.objects.filter(
+          Q(team_A=self.team_A) | Q(team_A=self.team_B) | Q(team_B=self.team_B) | Q(team_B=self.team_A),
+          sport=self.sport, 
+          region=self.region,
+          fixture_round=self.fixture_round, 
+          datetime__year=self.datetime.date().year
+        ).exclude(pk=self.pk)
+      if (fixture_filter_2.count() >= 1):
+        raise ValidationError(_(f'One or both of these teams already has an entry for this round'))
+    if (self.team_A is not None and self.team_B is not None):
+      if (self.team_A == self.team_B):
+        raise ValidationError(_('Teams must be different'))
+      if (self.team_A.region != self.region and self.region != 'A'):
+        raise ValidationError(_(f'Wrong Region for {self.team_A}'))
+      if (self.team_B.region != self.region and self.region != 'A'):
+        raise ValidationError(_(f'Wrong Region for {self.team_B}'))
 
   def __str__(self):
-    return f'{self.team_A} v {self.team_B} ({self.date.date() if self.date != None else "Date Not Set"})'
+    return_string = f'{self.datetime.date().year} - {self.get_region_display()} {self.get_sport_display()} {self.get_fixture_round_display()}'
+    if (self.team_A is not None and self.team_B is not None):
+      return_string += f' - {self.team_A} v {self.team_B}'
+    return return_string
 
 
 class Result(models.Model):
-  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='fixture')
+  fixture = models.OneToOneField(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='fixture')
   team_A_goals = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_A_points = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_B_goals = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_B_points = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
   def __str__(self):
-    return f'{self.fixture.date.date() if self.fixture.date != None else "Date Not Set"}, {self.fixture.team_A} {self.team_A_goals}-{self.team_A_points} : {self.team_B_goals}-{self.team_B_points} {self.fixture.team_B}'
+    return_string = f'{self.fixture}'
+    if (self.fixture.team_A is not None and self.fixture.team_B is not None):
+      return_string += f' - {self.team_A_goals}-{self.team_A_points} : {self.team_B_goals}-{self.team_B_points}'
+    return return_string
 
 
 class Score(models.Model):
@@ -102,8 +146,19 @@ class Score(models.Model):
   points_open_play = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
   points_placed_balls = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
 
+  class Meta:
+    constraints = [
+      models.UniqueConstraint(fields=['player', 'fixture'], name='unique score')
+    ]
+
+  def clean(self):
+    if (self.fixture.datetime >= timezone.now()):
+      raise ValidationError(_('Match has not taken place yet, try changing details in fixtures'))
+    if (self.player.team != self.fixture.team_A and self.player.team != self.fixture.team_B):
+      raise ValidationError(_('This player does not play with either of the teams involved'))
+
   def __str__(self):
-    return f'{self.player.first_name} {self.player.last_name}; {self.fixture}; {self.goals_open_play + self.goals_placed_balls}-{self.points_open_play + self.points_placed_balls}'
+    return f'{self.fixture} - {self.player.first_name} {self.player.last_name}'
 
 
 class Prediction(models.Model):
@@ -114,17 +169,37 @@ class Prediction(models.Model):
     return f'{self.fixture}, {self.get_prediction_display()}'
     
 
-class Participants(models.Model):
-  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='participants_fixture')
-  team_A = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='participants_team_A')
-  team_B = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='participants_team_B')
+class Finalist(models.Model):
+  fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='finalist_fixture')
+  team_A = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='finalist_team_A')
+  team_B = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='finalist_team_B')
 
   def clean(self):
-    if self.team_A == self.team_B:
+    if (self.fixture.fixture_round not in ['Q', 'S', 'F']):
+      raise ValidationError(_('Finalists prediction only available for knock-out stages'))
+    if (self.team_A == self.team_B):
       raise ValidationError(_('Teams must be different'))
+    if (self.team_A.region != self.fixture.region and self.fixture.region != 'A'):
+      raise ValidationError(_(f'Wrong Region for {self.team_A}'))
+    if (self.team_B.region != self.fixture.region and self.fixture.region != 'A'):
+      raise ValidationError(_(f'Wrong Region for {self.team_B}'))
 
   def __str__(self):
-    return f'{self.fixture.get_region_display()} {self.fixture.get_fixture_round_display()}: {self.team_A} - {self.team_B}'
+    return f'{self.fixture} - {self.team_A} v {self.team_B}'
+
+
+class TopScorer(models.Model):
+  region = models.CharField(max_length=100, null=False, blank=False, choices=Region.choices)
+  player = models.ForeignKey(Player, on_delete=models.PROTECT, null=False, blank=False, related_name='top_scorer')
+  goals = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+  points = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(1000)])
+
+  def clean(self):
+    if (self.region != self.player.team.region):
+      raise ValidationError(_('Player is not in this region'))
+
+  def __str__(self):
+    return f'{self.player} - {self.goals}-{self.points}'
 
 
 class Entry(models.Model):
@@ -132,8 +207,24 @@ class Entry(models.Model):
   datetime = models.DateTimeField(default=timezone.now, null=False, blank=True)
   points = models.IntegerField(default=0, validators=[MinValueValidator(0)], null=False, blank=True)
   paid = models.BooleanField(default=False, null=False, blank=True)
-  predictions = models.ManyToManyField(Prediction, related_name = 'entry_prediction')
-  participants = models.ManyToManyField(Participants, related_name = 'entry_participants')
+  predictions = models.ManyToManyField(Prediction, related_name = 'entry_predictions')
+  finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
+  top_scorers = models.ManyToManyField(TopScorer, related_name = 'entry_top_scorers')
+  entry_number = models.IntegerField(default=1, validators=[MinValueValidator(1)], null=False, blank=True)
+
+  class Meta:
+    constraints = [
+      models.UniqueConstraint(fields=['user', 'datetime'], name='unique entry')
+    ]
+
+  def save(self, *args, **kwargs):
+    count = Entry.objects.filter(user=self.user).count()
+    if count >= 1:
+      self.entry_number = count + 1
+    super(Entry, self).save(*args, **kwargs)
 
   def __str__(self):
-    return f'{self.user.get_username()}'
+    return_string = f'{self.datetime.date().year} - {self.user.first_name} {self.user.last_name}'
+    if self.entry_number > 1:
+      return_string += f' ({self.entry_number})'
+    return return_string
