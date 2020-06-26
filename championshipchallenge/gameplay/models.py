@@ -163,11 +163,13 @@ class Score(models.Model):
 
 class Prediction(models.Model):
   fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='prediction_fixture')
-  prediction = models.CharField(max_length=100, null=False, blank=False, choices=Prediction.choices)
+  prediction = models.CharField(max_length=100, null=True, blank=False, choices=Prediction.choices)
+  # # entry = models.ManyToManyField(Entry, related_name = 'prediction_entries')
+  # entry = models.ForeignKey(Entry, null=True, on_delete=models.SET_NULL)
 
   def __str__(self):
     return f'{self.fixture}, {self.get_prediction_display()}'
-    
+
 
 class Finalist(models.Model):
   fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='finalist_fixture')
@@ -208,8 +210,8 @@ class Entry(models.Model):
   points = models.IntegerField(default=0, validators=[MinValueValidator(0)], null=False, blank=True)
   paid = models.BooleanField(default=False, null=False, blank=True)
   predictions = models.ManyToManyField(Prediction, related_name = 'entry_predictions')
-  finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
-  top_scorers = models.ManyToManyField(TopScorer, related_name = 'entry_top_scorers')
+  # finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
+  # top_scorers = models.ManyToManyField(TopScorer, related_name = 'entry_top_scorers')
   entry_number = models.IntegerField(default=1, validators=[MinValueValidator(1)], null=False, blank=True)
 
   class Meta:

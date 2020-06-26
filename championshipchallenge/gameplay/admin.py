@@ -10,7 +10,8 @@ from .models import Team, Player, Fixture, Result, Score, Prediction, Finalist, 
 #   inlines = [EntryInline]
 
 class EntryAdmin(admin.ModelAdmin):
-  filter_horizontal = ("predictions", "finalists", "top_scorers")
+  # filter_horizontal = ("finalists", "top_scorers")
+  pass
 
 
 admin.site.register(Entry, EntryAdmin)

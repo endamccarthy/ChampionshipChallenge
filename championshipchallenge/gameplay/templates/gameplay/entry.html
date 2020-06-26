@@ -1,0 +1,70 @@
+{% extends 'gameplay/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-8 mb-3">
+    <div class="card card-body">
+
+      <!-- <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Create Entry</legend>
+
+          <h4>Munster Championship</h4>
+          <table class="table table-sm">
+            <tr>
+              <th>Round</th>
+              <th>Team A</th>
+              <th>Team B</th>
+              <th>Date</th>
+              <th>Location</th>
+              <th>Prediction</th>
+            </tr>
+            {% for item in round_fixtures %}
+            {% if item.fixture.region == 'M' %}
+            <tr>
+              <td>{{ item.fixture.fixture_round }}</td>
+              <td>{{ item.fixture.team_A }}</td>
+              <td>{{ item.fixture.team_B }}</td>
+              <td>{{ item.fixture.datetime }}</td>
+              <td>{{ item.fixture.location }}</td>
+              <td>{{ item.form.prediction|as_crispy_field }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            <tr>
+              <td colspan="5">Final Winners</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="5">Final Runners-up</td>
+              <td></td>
+            </tr>
+          </table>
+
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Submit</button>
+        </div>
+      </form> -->
+
+      <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Create Entry</legend>
+
+          {{ fix1|crispy }}
+          {{ fix2|crispy }}
+
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Submit</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
