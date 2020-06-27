@@ -22,6 +22,43 @@ class Region(models.TextChoices):
   ALL_IRELAND = 'A', _('All-Ireland')
 
 
+class County(models.TextChoices):
+  ANTRIM = 'AM', _('Antrim')
+  ARMAGH = 'AH', _('Armagh')
+  CARLOW = 'CW', _('Carlow')
+  CAVAN = 'CN', _('Cavan')
+  CLARE = 'CE', _('Clare')
+  CORK = 'CK', _('Cork')
+  DERRY = 'DY', _('Derry')
+  DONEGAL = 'DL', _('Donegal')
+  DOWN = 'DN', _('Down')
+  DUBLIN = 'DB', _('Dublin')
+  FERMANAGH = 'FH', _('Fermanagh')
+  GALWAY = 'GY', _('Galway')
+  KERRY = 'KY', _('Kerry')
+  KILDARE = 'KE', _('Kildare')
+  KILKENNY = 'KK', _('Kilkenny')
+  LAOIS = 'LS', _('Laois')
+  LEITRIM = 'LM', _('Leitrim')
+  LIMERICK = 'LK', _('Limerick')
+  LONDON = 'LN', _('London')
+  LONGFORD = 'LD', _('Longford')
+  LOUTH = 'LH', _('Louth')
+  MAYO = 'MO', _('Mayo')
+  MEATH = 'MH', _('Meath')
+  MONAGHAN = 'MN', _('Monaghan')
+  NEW_YORK = 'NY', _('New York')
+  OFFALY = 'OY', _('Offaly')
+  ROSCOMMON = 'RN', _('Roscommon')
+  SLIGO = 'SO', _('Sligo')
+  TIPPERARY = 'TY', _('Tipperary')
+  TYRONE = 'TE', _('Tyrone')
+  WATERFORD = 'WD', _('Waterford')
+  WESTMEATH = 'WH', _('Westmeath')
+  WEXFORD = 'WX', _('Wexford')
+  WICKLOW = 'WW', _('Wicklow')
+
+
 class Round(models.TextChoices):
   FIRST = '1', _('First Round')
   SECOND = '2', _('Second Round')
@@ -38,7 +75,7 @@ class Round(models.TextChoices):
   FINAL = 'F', _('Final')
 
 
-class Prediction(models.TextChoices):
+class PredictionOption(models.TextChoices):
   TEAM_A_WIN = 'A', _('Team A Win')
   TEAM_B_WIN = 'B', _('Team B Win')
   DRAW = 'D', _('Draw')
@@ -49,27 +86,32 @@ def get_sentinel_user():
 
 
 class Team(models.Model):
-  name = models.CharField(max_length=100, null=False, blank=False, unique=True)
+  name = models.CharField(max_length=100, null=False, blank=False, choices=County.choices, unique=False)
   region = models.CharField(max_length=100, null=False, blank=False, choices=Region.choices)
+  sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
+
+  class Meta:
+    constraints = [
+      models.UniqueConstraint(fields=['name', 'sport'], name='unique team')
+    ]
 
   def __str__(self):
-    return f'{self.name}'
+    return f'{self.get_name_display()} {self.get_sport_display()}'
 
 
 class Player(models.Model):
   first_name = models.CharField(max_length=100, null=False, blank=False)
   last_name = models.CharField(max_length=100, null=False, blank=False)
   team = models.ForeignKey(Team, on_delete=models.PROTECT, null=False, blank=False, related_name='team')
-  sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
   active = models.BooleanField(default=True, null=False, blank=False)
 
   class Meta:
     constraints = [
-      models.UniqueConstraint(fields=['first_name', 'last_name', 'team', 'sport'], name='unique player')
+      models.UniqueConstraint(fields=['first_name', 'last_name', 'team'], name='unique player')
     ]
 
   def __str__(self):
-    return f'{self.get_sport_display()} - {self.team} - {self.first_name} {self.last_name}'
+    return f'{self.first_name} {self.last_name} - {self.team}'
 
 
 class Fixture(models.Model):
@@ -79,11 +121,11 @@ class Fixture(models.Model):
   sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
   region = models.CharField(max_length=100, null=False, blank=False, choices=Region.choices)
   fixture_round = models.CharField(max_length=100, null=False, blank=False, choices=Round.choices)
-  location = models.ForeignKey(Team, on_delete=models.PROTECT, null=True, blank=True, related_name='location')
+  location = models.CharField(max_length=100, null=True, blank=True, choices=County.choices)
 
   class Meta:
     constraints = [
-      models.UniqueConstraint(fields=['team_A', 'team_B', 'datetime', 'sport'], name='unique fixture')
+      models.UniqueConstraint(fields=['team_A', 'team_B', 'datetime'], name='unique fixture')
     ]
 
   def clean(self):
@@ -163,9 +205,7 @@ class Score(models.Model):
 
 class Prediction(models.Model):
   fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='prediction_fixture')
-  prediction = models.CharField(max_length=100, null=True, blank=False, choices=Prediction.choices)
-  # # entry = models.ManyToManyField(Entry, related_name = 'prediction_entries')
-  # entry = models.ForeignKey(Entry, null=True, on_delete=models.SET_NULL)
+  prediction = models.CharField(max_length=100, null=True, blank=False, choices=PredictionOption.choices)
 
   def __str__(self):
     return f'{self.fixture}, {self.get_prediction_display()}'
@@ -185,6 +225,10 @@ class Finalist(models.Model):
       raise ValidationError(_(f'Wrong Region for {self.team_A}'))
     if (self.team_B.region != self.fixture.region and self.fixture.region != 'A'):
       raise ValidationError(_(f'Wrong Region for {self.team_B}'))
+    if (self.team_A.sport != self.fixture.sport and self.fixture.sport != 'A'):
+      raise ValidationError(_(f'Wrong Sport for {self.team_A}'))
+    if (self.team_B.sport != self.fixture.sport and self.fixture.sport != 'A'):
+      raise ValidationError(_(f'Wrong Sport for {self.team_B}'))
 
   def __str__(self):
     return f'{self.fixture} - {self.team_A} v {self.team_B}'
@@ -192,6 +236,7 @@ class Finalist(models.Model):
 
 class TopScorer(models.Model):
   region = models.CharField(max_length=100, null=False, blank=False, choices=Region.choices)
+  sport = models.CharField(max_length=100, null=False, blank=False, choices=Sport.choices)
   player = models.ForeignKey(Player, on_delete=models.PROTECT, null=False, blank=False, related_name='top_scorer')
   goals = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
   points = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(1000)])
@@ -199,6 +244,8 @@ class TopScorer(models.Model):
   def clean(self):
     if (self.region != self.player.team.region):
       raise ValidationError(_('Player is not in this region'))
+    if (self.sport != self.player.team.sport):
+      raise ValidationError(_('Player does not play this sport'))
 
   def __str__(self):
     return f'{self.player} - {self.goals}-{self.points}'
@@ -210,7 +257,7 @@ class Entry(models.Model):
   points = models.IntegerField(default=0, validators=[MinValueValidator(0)], null=False, blank=True)
   paid = models.BooleanField(default=False, null=False, blank=True)
   predictions = models.ManyToManyField(Prediction, related_name = 'entry_predictions')
-  # finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
+  finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
   # top_scorers = models.ManyToManyField(TopScorer, related_name = 'entry_top_scorers')
   entry_number = models.IntegerField(default=1, validators=[MinValueValidator(1)], null=False, blank=True)
 
