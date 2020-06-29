@@ -6,59 +6,25 @@
   <div class="col-md-8 mb-3">
     <div class="card card-body">
 
-      <form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-          <legend class="border-bottom mb-4">Create Entry</legend>
-
-          <h4>Munster Championship</h4>
+          <h4 class="border-bottom mb-4">Munster Championship</h4>
           <table class="table table-sm">
-            <tr>
-              <th>Round</th>
-              <th>Team A</th>
-              <th>Team B</th>
-              <th>Date</th>
-              <th>Location</th>
-              <th>Prediction</th>
-            </tr>
-            {% for item in provincial_round_fixtures %}
-            {% if item.region == 'M' %}
-            <tr>
-              <td>{{ item.fixture_round }}</td>
-              <td>{{ item.team_A.get_name_display }}</td>
-              <td>{{ item.team_B.get_name_display }}</td>
-              <td>{{ item.datetime }}</td>
-              <td>{{ item.get_location_display }}</td>
-              <td>        
-                <select name="fixture_prediction_{{ item.id }}" class="select form-control" required id="id_fixture_prediction_{{ item.id }}">
-                  <option value="" selected disabled>----------</option>
-                  {% for option in prediction_options %}
-                  <option value="{{ option }}">{{ option.label }}</option>
-                  {% endfor %}
-                </select>
-              </td>
-            </tr>
+            {% include 'gameplay/entry_table_header.html' %}
+            {% for item in entry.predictions.all %}
+            {% if item.fixture.region == 'M' %}
+            {% include 'gameplay/entry_table_row.html' %}
             {% endif %}
             {% endfor %}
-            <!-- {% for item in provincial_final_fixtures %}
-            {% if item.region == 'M' and item.sport == 'H' %}
-            <tr>
-              <td colspan="5">{{ item.get_region_display }} {{ item.get_sport_display }} {{ item.get_fixture_round_display }} Winners</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td colspan="5">{{ item.get_region_display }} {{ item.get_sport_display }} {{ item.get_fixture_round_display }} Runners-up</td>
-              <td></td>
-            </tr>
-            {% endif %}
-            {% endfor %} -->
           </table>
 
-        </fieldset>
-        <div class="form-group">
-          <button class="btn btn-outline-info" type="submit">Submit</button>
-        </div>
-      </form>
+          <h4 class="border-bottom mb-4">Leinster Championship</h4>
+          <table class="table table-sm">
+            {% include 'gameplay/entry_table_header.html' %}
+            {% for item in entry.predictions.all %}
+            {% if item.fixture.region == 'L' %}
+            {% include 'gameplay/entry_table_row.html' %}
+            {% endif %}
+            {% endfor %}
+          </table>
 
     </div>
   </div>

@@ -1,0 +1,15 @@
+<tr>
+  <td>{{ item.fixture.fixture_round }}</td>
+  <td>{{ item.fixture.team_A.get_name_display }} vs {{ item.fixture.team_B.get_name_display }}</td>
+  <td>{{ item.fixture.datetime }}</td>
+  <td>{{ item.fixture.get_location_display }}</td>
+  <td>
+    {% if item.prediction == 'A' %}
+    {{ item.fixture.team_A.get_name_display }} Win
+    {% elif item.prediction == 'B' %}
+    {{ item.fixture.team_B.get_name_display }} Win
+    {% elif item.prediction == 'D' %}
+    Draw
+    {% endif %}
+  </td>
+</tr>

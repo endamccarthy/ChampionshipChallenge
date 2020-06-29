@@ -1,0 +1,44 @@
+{% extends 'gameplay/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-8 mb-3">
+    <div class="card card-body">
+
+      <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Create Entry</legend>
+
+          <h4>Munster Championship</h4>
+          <table class="table table-sm">
+            {% include 'gameplay/entry_table_header.html' %}
+            {% for item in provincial_round_fixtures %}
+            {% if item.region == 'M' %}
+            {% include 'gameplay/create_entry_table_row.html' %}
+            {% endif %}
+            {% endfor %}
+          </table>
+
+          <h4>Leinster Championship</h4>
+          <table class="table table-sm">
+            {% include 'gameplay/entry_table_header.html' %}
+            {% for item in provincial_round_fixtures %}
+            {% if item.region == 'L' %}
+            {% include 'gameplay/create_entry_table_row.html' %}
+            {% endif %}
+            {% endfor %}
+          </table>
+
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Submit</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

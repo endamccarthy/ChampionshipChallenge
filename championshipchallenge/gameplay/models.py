@@ -172,6 +172,7 @@ class Result(models.Model):
   team_A_points = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_B_goals = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
   team_B_points = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+  final_result = models.BooleanField(default=False, null=False, blank=False)
 
   def __str__(self):
     return_string = f'{self.fixture}'
@@ -198,6 +199,11 @@ class Score(models.Model):
       raise ValidationError(_('Match has not taken place yet, try changing details in fixtures'))
     if (self.player.team != self.fixture.team_A and self.player.team != self.fixture.team_B):
       raise ValidationError(_('This player does not play with either of the teams involved'))
+    try:
+      if (Result.objects.get(fixture=self.fixture).final_result):
+        raise ValidationError(_('The result for this game has been marked as final, please change this in results to add or change a score'))
+    except Result.DoesNotExist:
+      raise ValidationError(_('The result for this fixture does not exist, try creating a new result first'))
 
   def __str__(self):
     return f'{self.fixture} - {self.player.first_name} {self.player.last_name}'
@@ -206,6 +212,11 @@ class Score(models.Model):
 class Prediction(models.Model):
   fixture = models.ForeignKey(Fixture, on_delete=models.PROTECT, null=False, blank=False, related_name='prediction_fixture')
   prediction = models.CharField(max_length=100, null=True, blank=False, choices=PredictionOption.choices)
+
+  class Meta:
+    constraints = [
+      models.UniqueConstraint(fields=['fixture', 'prediction'], name='unique prediction')
+    ]
 
   def __str__(self):
     return f'{self.fixture}, {self.get_prediction_display()}'
@@ -257,7 +268,7 @@ class Entry(models.Model):
   points = models.IntegerField(default=0, validators=[MinValueValidator(0)], null=False, blank=True)
   paid = models.BooleanField(default=False, null=False, blank=True)
   predictions = models.ManyToManyField(Prediction, related_name = 'entry_predictions')
-  finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
+  # finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
   # top_scorers = models.ManyToManyField(TopScorer, related_name = 'entry_top_scorers')
   entry_number = models.IntegerField(default=1, validators=[MinValueValidator(1)], null=False, blank=True)
 
@@ -267,9 +278,11 @@ class Entry(models.Model):
     ]
 
   def save(self, *args, **kwargs):
-    count = Entry.objects.filter(user=self.user).count()
-    if count >= 1:
-      self.entry_number = count + 1
+    # if the entry is new (not being edited)
+    if self.pk is None:
+      count = Entry.objects.filter(user=self.user).count()
+      if count >= 1:
+        self.entry_number = count + 1
     super(Entry, self).save(*args, **kwargs)
 
   def __str__(self):

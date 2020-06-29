@@ -1,0 +1,53 @@
+{% extends 'gameplay/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-8 mb-3">
+    <div class="card card-body">
+
+          <h4 class="border-bottom mb-4">Munster Championship</h4>
+          <table class="table table-sm">
+            <tr>
+              <th>Round</th>
+              <th>Teams</th>
+              <th>Date</th>
+              <th>Location</th>
+            </tr>
+            {% for fixture in fixtures %}
+            {% if fixture.region == 'M' %}
+            <tr>
+              <td>{{ fixture.fixture_round }}</td>
+              <td>{{ fixture.team_A.get_name_display }} vs {{ fixture.team_B.get_name_display }}</td>
+              <td>{{ fixture.datetime }}</td>
+              <td>{{ fixture.get_location_display }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </table>
+
+          <h4 class="border-bottom mb-4">Leinster Championship</h4>
+          <table class="table table-sm">
+            <tr>
+              <th>Round</th>
+              <th>Teams</th>
+              <th>Date</th>
+              <th>Location</th>
+            </tr>
+            {% for fixture in fixtures %}
+            {% if fixture.region == 'L' %}
+            <tr>
+              <td>{{ fixture.fixture_round }}</td>
+              <td>{{ fixture.team_A.get_name_display }} vs {{ fixture.team_B.get_name_display }}</td>
+              <td>{{ fixture.datetime }}</td>
+              <td>{{ fixture.get_location_display }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+          </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
