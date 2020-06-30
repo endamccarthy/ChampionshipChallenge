@@ -15,8 +15,8 @@ def update_result(sender, instance, **kwargs):
   try:
     result = Result.objects.get(fixture=instance.fixture)
   except Result.DoesNotExist:
-    result = None
-  
+    result = Result.objects.create(fixture=instance.fixture)
+
   if result is not None:
     scores = Score.objects.filter(fixture=instance.fixture).all()
     team_A_goals = 0

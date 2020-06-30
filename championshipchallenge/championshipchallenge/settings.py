@@ -77,6 +77,7 @@ INSTALLED_APPS = [
   'allauth.account',
   'crispy_forms',
   'phonenumber_field',
+  'stripe',
 ]
 
 
@@ -267,6 +268,24 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER_GMAIL')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS_GMAIL')
+
+
+
+
+# ######################################################################################## #
+# SETTINGS FOR STRIPE
+# ######################################################################################## #
+
+if DEBUG:
+    # test keys
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
+else:
+    # IMPORTANT! - if site is actually being deployed to production, switch from test to live keys below
+    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
+    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
+    # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_LIVE')
+    # STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_LIVE')
 
 
 

@@ -1,0 +1,43 @@
+{% extends 'gameplay/base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- local css for stripe elements -->
+<link rel="stylesheet" type="text/css" href="{% static '/style/checkout.css' %}">
+
+
+<!-- main javascript for stripe functionality -->
+<script src="https://js.stripe.com/v3/"></script>
+
+
+<div class="row">
+  <div class="col-md-8 mb-3">
+    <div class="card card-body">
+
+      <form action="." method="post" id="payment-form">
+        {% csrf_token %}
+
+        <div>
+          <label for="card-element">
+            Credit or debit card
+          </label>
+          <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+
+          <!-- Used to display form errors. -->
+          <div id="card-errors" role="alert"></div>
+        </div>
+
+        <button>Submit Payment</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- local javascript for stripe elements -->
+<script src="{% static 'js/checkout.js' %}"></script>
+
+{% endblock content %}
