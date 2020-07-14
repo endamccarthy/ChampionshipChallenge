@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+
 from .forms import UserUpdateForm
 
 
@@ -10,14 +11,14 @@ def user_details(request):
     form = UserUpdateForm(request.POST, instance=request.user)
     if form.is_valid():
       form.save()
-      messages.success(request, f'Your account has been updated')
+      messages.success(request, 'Your account has been updated')
       return redirect('user_details')
   else:
     form = UserUpdateForm(instance=request.user)
 
   context = {
-    'title': 'My Account',
-    'form': form
+      'title': 'My Account',
+      'form': form
   }
   return render(request, 'user/user_details.html', context)
 
@@ -28,11 +29,10 @@ def deactivate_account(request):
     user = request.user
     user.is_active = False
     user.save()
-    messages.success(request, f'Your account has been deactivated')
+    messages.success(request, 'Your account has been deactivated')
     return redirect('gameplay_home')
 
   context = {
-    'title': 'Deactivate Account',
+      'title': 'Deactivate Account',
   }
   return render(request, 'user/deactivate_account.html', context)
-

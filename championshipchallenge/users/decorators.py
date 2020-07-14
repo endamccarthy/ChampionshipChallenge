@@ -1,5 +1,4 @@
-from django.shortcuts import redirect
-
+# from django.shortcuts import redirect
 
 # def unauthenticated_user(view_func):
 #   def wrapper_func(request, *args, **kwargs):

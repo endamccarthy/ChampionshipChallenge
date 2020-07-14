@@ -5,4 +5,5 @@ class GameplayConfig(AppConfig):
   name = 'gameplay'
 
   def ready(self):
-    import gameplay.signals
+    # pylint: disable=unused-import, import-outside-toplevel
+    from . import signals

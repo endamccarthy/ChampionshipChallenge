@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Team, Player, Fixture, Result, Score, Prediction, Finalist, TopScorer, Entry
 
+from .models import (Entry, Finalist, Fixture, Player, Prediction, Result,
+                     Score, Team, TopScorer)
 
 # class EntryInline(admin.StackedInline):
 #   model = Entry.prediction.through
@@ -8,6 +9,7 @@ from .models import Team, Player, Fixture, Result, Score, Prediction, Finalist, 
 
 # class PredictionAdmin(admin.ModelAdmin):
 #   inlines = [EntryInline]
+
 
 class EntryAdmin(admin.ModelAdmin):
   # filter_horizontal = ("finalists", "top_scorers")

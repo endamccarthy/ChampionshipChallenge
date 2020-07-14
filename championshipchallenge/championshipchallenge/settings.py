@@ -12,17 +12,12 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-
-
-
 # ######################################################################################## #
 # SETTINGS FOR BASE DIRECTORY
 # ######################################################################################## #
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
 
 
 # ######################################################################################## #
@@ -41,8 +36,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-
-
 # ######################################################################################## #
 # SETTINGS FOR PRODUCTION
 # ######################################################################################## #
@@ -53,34 +46,30 @@ DEBUG = FALSE
 '''
 
 
-
-
 # ######################################################################################## #
 # SETTINGS FOR INSTALLED APPLICATIONS
 # ######################################################################################## #
 
 INSTALLED_APPS = [
-  'gameplay.apps.GameplayConfig',
-  'users.apps.UsersConfig',
+    'gameplay.apps.GameplayConfig',
+    'users.apps.UsersConfig',
 
-  'django.contrib.admin',
-  'django.contrib.auth',
-  'django.contrib.contenttypes',
-  'django.contrib.sessions',
-  'django.contrib.messages',
-  'django.contrib.staticfiles',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
 
-  'django.contrib.sites',
+    'django.contrib.sites',
 
-  # 3rd party
-  'allauth',
-  'allauth.account',
-  'crispy_forms',
-  'phonenumber_field',
-  'stripe',
+    # 3rd party
+    'allauth',
+    'allauth.account',
+    'crispy_forms',
+    'phonenumber_field',
+    'stripe',
 ]
-
-
 
 
 # ######################################################################################## #
@@ -88,18 +77,16 @@ INSTALLED_APPS = [
 # ######################################################################################## #
 
 MIDDLEWARE = [
-  'django.middleware.security.SecurityMiddleware',
-  'django.contrib.sessions.middleware.SessionMiddleware',
-  'django.middleware.common.CommonMiddleware',
-  'django.middleware.csrf.CsrfViewMiddleware',
-  'django.contrib.auth.middleware.AuthenticationMiddleware',
-  'django.contrib.messages.middleware.MessageMiddleware',
-  'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'championshipchallenge.urls'
-
-
 
 
 # ######################################################################################## #
@@ -107,24 +94,22 @@ ROOT_URLCONF = 'championshipchallenge.urls'
 # ######################################################################################## #
 
 TEMPLATES = [
-  {
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [],
-    'APP_DIRS': True,
-    'OPTIONS': {
-      'context_processors': [
-        'django.template.context_processors.debug',
-        'django.template.context_processors.request',
-        'django.contrib.auth.context_processors.auth',
-        'django.contrib.messages.context_processors.messages',
-      ],
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
     },
-  },
 ]
 
 WSGI_APPLICATION = 'championshipchallenge.wsgi.application'
-
-
 
 
 # ######################################################################################## #
@@ -134,13 +119,11 @@ WSGI_APPLICATION = 'championshipchallenge.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-  }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
 }
-
-
 
 
 # ######################################################################################## #
@@ -150,21 +133,19 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-  {
-    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-  },
-  {
-    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-  },
-  {
-    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-  },
-  {
-    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-  },
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
-
-
 
 
 # ######################################################################################## #
@@ -180,8 +161,6 @@ USE_L10N = True
 USE_TZ = True
 
 
-
-
 # ######################################################################################## #
 # SETTINGS FOR STATIC FILES
 # ######################################################################################## #
@@ -189,13 +168,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
-  os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static_root')
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
-
-
 
 
 # ######################################################################################## #
@@ -206,24 +184,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
-
-
 # ######################################################################################## #
-# SETTINGS FOR LOGGING IN REDIRECTS 
+# SETTINGS FOR LOGGING IN REDIRECTS
 # ######################################################################################## #
 
-# By default django wants to direct users to 'accounts/profile.html' 
+# By default django wants to direct users to 'accounts/profile.html'
 # after logging in - this overrides it
 LOGIN_REDIRECT_URL = 'gameplay_home'
-# By default if a view has the @login_required decorater, django tries 
+# By default if a view has the @login_required decorater, django tries
 # to redirect to 'accounts/login' which doesn't exist
 LOGIN_URL = 'account_login'
 
 
-
-
 # ######################################################################################## #
-# SETTINGS FOR DJANGO-ALLAUTH 
+# SETTINGS FOR DJANGO-ALLAUTH
 # ######################################################################################## #
 
 # allauth is required to provide custom registration details
@@ -234,10 +208,10 @@ ACCOUNT_LOGOUT_ON_GET = True
 AUTH_USER_MODEL = 'users.CustomUser'
 
 AUTHENTICATION_BACKENDS = (
-  # Needed to login by username in Django admin, regardless of `allauth`
-  "django.contrib.auth.backends.ModelBackend",
-  # `allauth` specific authentication methods, such as login by e-mail
-  "allauth.account.auth_backends.AuthenticationBackend",
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
 
 SITE_ID = 1
@@ -251,11 +225,9 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-ACCOUNT_FORMS = { 
-'signup': 'users.forms.CustomSignupForm',
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomSignupForm',
 }
-
-
 
 
 # ######################################################################################## #
@@ -270,24 +242,20 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER_GMAIL')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS_GMAIL')
 
 
-
-
 # ######################################################################################## #
 # SETTINGS FOR STRIPE
 # ######################################################################################## #
 
 if DEBUG:
-    # test keys
-    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
-    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
+  # test keys
+  STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
+  STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
 else:
-    # IMPORTANT! - if site is actually being deployed to production, switch from test to live keys below
-    STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
-    STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
-    # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_LIVE')
-    # STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_LIVE')
-
-
+  # IMPORTANT! - if site is actually being deployed to production, switch from test to live keys below
+  STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
+  STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
+  # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_LIVE')
+  # STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_LIVE')
 
 
 # ######################################################################################## #

@@ -1,17 +1,18 @@
+# from django.db.models import F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import Fixture, Result, Score, Entry, PredictionOption
-from django.db.models import F
+
+from .models import Entry, Fixture, PredictionOption, Result, Score
 
 
 @receiver(post_save, sender=Fixture)
-def create_result(sender, instance, created, **kwargs):
+def create_result(sender, instance, created, **kwargs):  # pylint: disable=unused-argument
   if created:
     Result.objects.create(fixture=instance)
 
 
 @receiver(post_save, sender=Score)
-def update_result(sender, instance, **kwargs):
+def update_result(sender, instance, **kwargs):  # pylint: disable=unused-argument
   try:
     result = Result.objects.get(fixture=instance.fixture)
   except Result.DoesNotExist:
@@ -23,7 +24,7 @@ def update_result(sender, instance, **kwargs):
     team_A_points = 0
     team_B_goals = 0
     team_B_points = 0
-    
+
     for score in scores:
       if score.player.team == score.fixture.team_A:
         team_A_goals += score.goals_open_play + score.goals_placed_balls
@@ -41,7 +42,7 @@ def update_result(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Result)
-def finalize_result(sender, instance, created, **kwargs):
+def finalize_result(sender, instance, created, **kwargs):  # pylint: disable=unused-argument
   update_all_points()
 
 
