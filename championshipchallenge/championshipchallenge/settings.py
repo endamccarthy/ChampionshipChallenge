@@ -245,6 +245,9 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS_GMAIL')
 # SETTINGS FOR STRIPE
 # ######################################################################################## #
 
+STRIPE_PRODUCT_SINGLE_ENTRY_PRICE_ID = os.environ.get(
+    'STRIPE_PRODUCT_SINGLE_ENTRY_PRICE_ID')
+
 if DEBUG:
   # test keys
   STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')

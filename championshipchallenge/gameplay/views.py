@@ -65,7 +65,9 @@ def create_entry_page(request):
         if created:
           new_entry.predictions.add(prediction_id)
         continue
-    return redirect('gameplay_review_entry', entry_id=new_entry.id)
+    messages.success(
+        request, 'Your entry has been saved! Please complete payment to ensure your entry is submitted')
+    return redirect('gameplay_checkout_page', new_entry.id)
   context = {
       'provincial_round_fixtures': provincial_round_fixtures,
       'prediction_options': PredictionOption,
@@ -76,24 +78,111 @@ def create_entry_page(request):
 
 
 @login_required
+def checkout_page(request, entry_id):
+  context = {
+      'entry_id': entry_id,
+      'public_key': settings.STRIPE_PUBLISHABLE_KEY,
+      'title': 'Checkout'
+  }
+  return render(request, 'gameplay/checkout.html', context)
+
+
+@login_required
 @csrf_exempt
-def checkout_page(request):
-  product_price = stripe.Price.retrieve('price_1H4ocuKSkIdC4LCMnGWYJwGx')
-  session = stripe.checkout.Session.create(
-      payment_method_types=['card'],
-      line_items=[{
-          'price': product_price,
-          'quantity': 1,
-      }],
-      mode='payment',
-      success_url=request.build_absolute_uri(
-          reverse('gameplay_home')) + '?session_id={CHECKOUT_SESSION_ID}',
-      cancel_url=request.build_absolute_uri(reverse('gameplay_create_entry')),
-  )
-  return JsonResponse({
-      'session_id': session.id,
-      'stripe_public_key': settings.STRIPE_PUBLISHABLE_KEY
-  })
+def checkout(request, entry_id):
+  try:
+    # data = json.loads(request.data)
+
+    product_price = stripe.Price.retrieve(
+        settings.STRIPE_PRODUCT_SINGLE_ENTRY_PRICE_ID)
+
+    customer = stripe.Customer.list(
+        email=request.user.email, limit=1)['data']
+    if not customer:
+      customer = stripe.Customer.create(email=request.user.email)
+    else:
+      customer = customer[0]
+
+    intent = stripe.PaymentIntent.create(
+        amount=product_price['unit_amount'],
+        currency=product_price['currency'],
+        customer=customer,
+        metadata={
+            'entry_id': entry_id,
+        }
+    )
+
+    return JsonResponse({
+        'clientSecret': intent['client_secret'],
+    })
+
+  except stripe.error.CardError as e:
+    body = e.json_body
+    err = body.get('error', {})
+    messages.warning(request, f"{err.get('message')}")
+
+  except stripe.error.RateLimitError as e:
+    # Too many requests made to the API too quickly
+    messages.warning(request, "Rate limit error")
+
+  except stripe.error.InvalidRequestError as e:
+    messages.warning(request, "Invalid parameters")
+
+  except stripe.error.AuthenticationError as e:
+    # Authentication with Stripe's API failed
+    # (maybe you changed API keys recently)
+    messages.warning(request, "Not authenticated")
+
+  except stripe.error.APIConnectionError as e:
+    # Network communication with Stripe failed
+    messages.warning(request, "Network error")
+
+  except stripe.error.StripeError as e:
+    messages.warning(
+        request, "Something went wrong. You were not charged. Please try again.")
+
+  except Exception as e:
+    messages.warning(request, "A serious error occurred.")
+
+  return redirect('gameplay_error_page')
+
+
+# If you are testing your webhook locally with the Stripe CLI you
+# can find the endpoint's secret by running `stripe listen`
+# Otherwise, find your endpoint's secret in your webhook settings in the Developer Dashboard
+endpoint_secret = 'whsec_nI20vuVyiu4dODRUsxGlQ1lXdIooaGfb'
+
+
+@csrf_exempt
+def checkout_webhook(request):
+  payload = request.body
+  sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+  event = None
+
+  try:
+    event = stripe.Webhook.construct_event(
+        payload, sig_header, endpoint_secret
+    )
+  except ValueError as e:
+    # Invalid payload
+    print('test1')
+    return HttpResponse(status=400)
+  except stripe.error.SignatureVerificationError as e:
+    # Invalid signature
+    print('test2')
+    return HttpResponse(status=400)
+
+  # Handle the event
+  if event.type == 'payment_intent.succeeded':
+    payment_intent = event.data.object  # contains a stripe.PaymentIntent
+    print(payment_intent['metadata'])
+    print('PaymentIntent was successful!')
+  # else:
+    # Unexpected event type
+    # print('test3')
+    # return HttpResponse(status=400)
+
+  return HttpResponse(status=200)
 
 
 # @login_required

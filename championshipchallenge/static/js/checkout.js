@@ -1,70 +1,106 @@
-// // Create a Stripe client.
-// var stripe = Stripe('pk_test_mB0tx0kFgj4FEFXJhYDqK40M00llyq7FI0');
+// Disable the button until we have Stripe set up on the page
+document.querySelector("button").disabled = true;
+fetch("/checkout/" + String(entry_id) + "/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+  })
+  .then(function (result) {
+    return result.json();
+  })
+  .then(function (data) {
+    var elements = stripe.elements();
 
-// // Create an instance of Elements.
-// var elements = stripe.elements();
+    var style = {
+      base: {
+        color: "#32325d",
+        fontFamily: 'Arial, sans-serif',
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#32325d"
+        }
+      },
+      invalid: {
+        fontFamily: 'Arial, sans-serif',
+        color: "#fa755a",
+        iconColor: "#fa755a"
+      }
+    };
 
-// // Custom styling can be passed to options when creating an Element.
-// // (Note that this demo uses a wider set of styles than the guide below.)
-// var style = {
-//   base: {
-//     color: '#32325d',
-//     fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-//     fontSmoothing: 'antialiased',
-//     fontSize: '16px',
-//     '::placeholder': {
-//       color: '#aab7c4'
-//     }
-//   },
-//   invalid: {
-//     color: '#fa755a',
-//     iconColor: '#fa755a'
-//   }
-// };
+    var card = elements.create("card", {
+      hidePostalCode: true,
+      style: style
+    });
+    // Stripe injects an iframe into the DOM
+    card.mount("#card-element");
 
-// // Create an instance of the card Element.
-// var card = elements.create('card', {style: style});
+    card.on("change", function (event) {
+      // Disable the Pay button if there are no card details in the Element
+      document.querySelector("button").disabled = event.empty;
+      document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
+    });
 
-// // Add an instance of the card Element into the `card-element` <div>.
-// card.mount('#card-element');
+    var form = document.getElementById("payment-form");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      // Complete payment when the submit button is clicked
+      payWithCard(stripe, card, data.clientSecret);
+    });
+  });
 
-// // Handle real-time validation errors from the card Element.
-// card.on('change', function(event) {
-//   var displayError = document.getElementById('card-errors');
-//   if (event.error) {
-//     displayError.textContent = event.error.message;
-//   } else {
-//     displayError.textContent = '';
-//   }
-// });
+// Calls stripe.confirmCardPayment
+// If the card requires authentication Stripe shows a pop-up modal to
+// prompt the user to enter authentication details without leaving your page.
+var payWithCard = function (stripe, card, clientSecret) {
+  loading(true);
+  stripe
+    .confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: card
+      }
+    })
+    .then(function (result) {
+      if (result.error) {
+        // Show error to your customer
+        showError(result.error.message);
+      } else {
+        // The payment succeeded!
+        orderComplete(result.paymentIntent.id);
+      }
+    });
+};
 
-// // Handle form submission.
-// var form = document.getElementById('payment-form');
-// form.addEventListener('submit', function(event) {
-//   event.preventDefault();
+/* ------- UI helpers ------- */
 
-//   stripe.createToken(card).then(function(result) {
-//     if (result.error) {
-//       // Inform the user if there was an error.
-//       var errorElement = document.getElementById('card-errors');
-//       errorElement.textContent = result.error.message;
-//     } else {
-//       // Send the token to your server.
-//       stripeTokenHandler(result.token);
-//     }
-//   });
-// });
+// Shows a success message when the payment is complete
+var orderComplete = function (paymentIntentId) {
+  loading(false);
+  document.querySelector(".stripe-result-message").classList.remove("hidden");
+  document.querySelector(".stripe-button").disabled = true;
+};
 
-// // Submit the form with the token ID.
-// function stripeTokenHandler(token) {
-//   // Insert the token ID into the form so it gets submitted to the server
-//   var form = document.getElementById('payment-form');
-//   var hiddenInput = document.createElement('input');
-//   hiddenInput.setAttribute('type', 'hidden');
-//   hiddenInput.setAttribute('name', 'stripeToken');
-//   hiddenInput.setAttribute('value', token.id);
-//   form.appendChild(hiddenInput);
+// Show the customer the error from Stripe if their card fails to charge
+var showError = function (errorMsgText) {
+  loading(false);
+  var errorMsg = document.querySelector("#card-error");
+  errorMsg.textContent = errorMsgText;
+  setTimeout(function () {
+    errorMsg.textContent = "";
+  }, 5000);
+};
 
-//   // Submit the form
-//   form.submit();
-// }
+// Show a spinner on payment submission
+var loading = function (isLoading) {
+  if (isLoading) {
+    // Disable the button and show a spinner
+    document.querySelector("button").disabled = true;
+    document.querySelector("#spinner").classList.remove("hidden");
+    document.querySelector("#button-text").classList.add("hidden");
+  } else {
+    document.querySelector("button").disabled = false;
+    document.querySelector("#spinner").classList.add("hidden");
+    document.querySelector("#button-text").classList.remove("hidden");
+  }
+};
