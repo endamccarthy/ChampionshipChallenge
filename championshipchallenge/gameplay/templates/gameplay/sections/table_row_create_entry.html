@@ -1,0 +1,25 @@
+<tr class="accordion-toggle table_row_border_top">
+  <td scope="row">
+    <i class="symbol fas fa-chevron-down fa-1x" data-toggle="collapse" data-target="#item{{ item.id }}"></i>
+  </td>
+  <td>{{ item.fixture_round }}</td>
+  <td>{{ item.team_A.get_name_display }}</td>
+  <td>{{ item.team_B.get_name_display }}</td>
+  <td>
+    <select name="fixture_prediction_{{ item.id }}" class="select form-control form-control-sm" required
+      id="id_fixture_prediction_{{ item.id }}">
+      <option value="" selected disabled>----------</option>
+      <option value="{{ prediction_options.TEAM_A_WIN }}">{{ item.team_A.get_name_display }}</option>
+      <option value="{{ prediction_options.TEAM_B_WIN }}">{{ item.team_B.get_name_display }}</option>
+      <option value="{{ prediction_options.DRAW }}">Draw</option>
+    </select>
+  </td>
+</tr>
+<tr class="text-left">
+  <td colspan="4" class="hiddenRow">
+    <div class="accordion-body collapse m-2" id="item{{ item.id }}">
+      <b>Date: </b>{{ item.datetime }} <br>
+      <b>Location: </b>{{ item.get_location_display }}
+    </div>
+  </td>
+</tr>

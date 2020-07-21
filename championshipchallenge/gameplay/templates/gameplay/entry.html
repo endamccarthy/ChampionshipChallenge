@@ -3,30 +3,37 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-8 mb-3">
+  <div class="col-md-6 mb-3">
+    {% include 'gameplay/sections/page_heading.html' %}
+
     <div class="card card-body">
-
-          <h4 class="border-bottom mb-4">Munster Championship</h4>
-          <table class="table table-sm">
-            {% include 'gameplay/entry_table_header.html' %}
-            {% for item in entry.predictions.all %}
-            {% if item.fixture.region == 'M' %}
-            {% include 'gameplay/entry_table_row.html' %}
-            {% endif %}
-            {% endfor %}
-          </table>
-
-          <h4 class="border-bottom mb-4">Leinster Championship</h4>
-          <table class="table table-sm">
-            {% include 'gameplay/entry_table_header.html' %}
-            {% for item in entry.predictions.all %}
-            {% if item.fixture.region == 'L' %}
-            {% include 'gameplay/entry_table_row.html' %}
-            {% endif %}
-            {% endfor %}
-          </table>
-
+      <h4 class="mb-4">Munster Championship</h4>
+      <table>
+        {% include 'gameplay/sections/table_header_entry.html' %}
+        <tbody>
+          {% for item in entry.predictions.all %}
+          {% if item.fixture.region == 'M' %}
+          {% include 'gameplay/sections/table_row_entry.html' %}
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+
+    <div class="card card-body">
+      <h4 class="mb-4">Leinster Championship</h4>
+      <table>
+        {% include 'gameplay/sections/table_header_entry.html' %}
+        <tbody>
+          {% for item in entry.predictions.all %}
+          {% if item.fixture.region == 'L' %}
+          {% include 'gameplay/sections/table_row_entry.html' %}
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 

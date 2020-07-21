@@ -1,0 +1,16 @@
+<tr class="accordion-toggle table_row_border_top">
+  <td scope="row">
+    <i class="symbol fas fa-chevron-down fa-1x" data-toggle="collapse" data-target="#fixture{{ fixture.id }}"></i>
+  </td>
+  <td>{{ fixture.fixture_round }}</td>
+  <td>{{ fixture.team_A.get_name_display }}</td>
+  <td>{{ fixture.team_B.get_name_display }}</td>
+</tr>
+<tr class="text-left">
+  <td colspan="4" class="hiddenRow">
+    <div class="accordion-body collapse m-2" id="fixture{{ fixture.id }}">
+      <b>Date: </b>{{ fixture.datetime }} <br>
+      <b>Location: </b>{{ fixture.get_location_display }}
+    </div>
+  </td>
+</tr>

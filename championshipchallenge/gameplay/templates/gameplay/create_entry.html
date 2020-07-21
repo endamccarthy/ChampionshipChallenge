@@ -3,43 +3,49 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-md-8 mb-3">
-    <div class="card card-body">
+  <div class="col-md-7 mb-3">
+    {% include 'gameplay/sections/page_heading.html' %}
 
-      <form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-          <legend class="border-bottom mb-4">Create Entry</legend>
+    <form method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group">
 
-          <h4>Munster Championship</h4>
-          <table class="table table-sm">
-            {% include 'gameplay/entry_table_header.html' %}
-            {% for item in provincial_round_fixtures %}
-            {% if item.region == 'M' %}
-            {% include 'gameplay/create_entry_table_row.html' %}
-            {% endif %}
-            {% endfor %}
+        <div class="card card-body">
+          <h4 class="mb-4">Munster Championship</h4>
+          <table>
+            {% include 'gameplay/sections/table_header_entry.html' %}
+            <tbody>
+              {% for item in provincial_round_fixtures %}
+              {% if item.region == 'M' %}
+              {% include 'gameplay/sections/table_row_create_entry.html' %}
+              {% endif %}
+              {% endfor %}
+            </tbody>
           </table>
-
-          <h4>Leinster Championship</h4>
-          <table class="table table-sm">
-            {% include 'gameplay/entry_table_header.html' %}
-            {% for item in provincial_round_fixtures %}
-            {% if item.region == 'L' %}
-            {% include 'gameplay/create_entry_table_row.html' %}
-            {% endif %}
-            {% endfor %}
-          </table>
-
-        </fieldset>
-        <div class="form-group">
-          <p>Submit entry and continue to payment?</p>
-          <button class="btn btn-outline-info" type="submit">Yes</button>
-          <input class="btn btn-danger ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
         </div>
-      </form>
 
-    </div>
+        <div class="card card-body">
+          <h4 class="mb-4">Leinster Championship</h4>
+          <table>
+            {% include 'gameplay/sections/table_header_entry.html' %}
+            <tbody>
+              {% for item in provincial_round_fixtures %}
+              {% if item.region == 'L' %}
+              {% include 'gameplay/sections/table_row_create_entry.html' %}
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+      </fieldset>
+      <div class="form-group">
+        <p>Submit entry and continue to payment?</p>
+        <button class="btn btn-outline-info" type="submit">Yes</button>
+        <input class="btn btn-danger ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
+      </div>
+    </form>
+
   </div>
 </div>
 

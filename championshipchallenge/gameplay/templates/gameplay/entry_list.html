@@ -1,0 +1,34 @@
+{% extends 'gameplay/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6 mb-3">
+    {% include 'gameplay/sections/page_heading.html' %}
+    <div class="card card-body">
+
+      <table>
+        <thead>
+          <tr>
+            <th class="text-left" scope="col" style="width: 50%">Name</th>
+            <th scope="col" style="width: 30%">Points</th>
+            <th scope="col" style="width: 20%"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+          <tr class="table_row_border_top">
+            <td class="text-left">{{ entry.user.first_name }} {{ entry.user.last_name }} {% if entry.entry_number > 1 %}
+              ({{ entry.entry_number }}) {% endif %}</td>
+            <td>{{ entry.points }}</td>
+            <td><a class="btn btn-sm btn-info" href="{% url 'gameplay_entry' entry.id %}">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

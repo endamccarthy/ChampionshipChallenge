@@ -1,0 +1,26 @@
+<tr class="table_row_border_top">
+  <td scope="row">
+    <i class="symbol fas fa-chevron-down fa-1x" data-toggle="collapse"
+      data-target="#item_fixture{{ item.fixture.id }}"></i>
+  </td>
+  <td scope="row">{{ item.fixture.fixture_round }}</td>
+  <td>{{ item.fixture.team_A.get_name_display }}</td>
+  <td>{{ item.fixture.team_B.get_name_display }}</td>
+  <td>
+    {% if item.prediction == 'A' %}
+    {{ item.fixture.team_A.get_name_display }}
+    {% elif item.prediction == 'B' %}
+    {{ item.fixture.team_B.get_name_display }}
+    {% elif item.prediction == 'D' %}
+    Draw
+    {% endif %}
+  </td>
+</tr>
+<tr class="text-left">
+  <td colspan="4" class="hiddenRow">
+    <div class="accordion-body collapse m-2" id="item_fixture{{ item.fixture.id }}">
+      <b>Date: </b>{{ item.fixture.datetime }} <br>
+      <b>Location: </b>{{ item.fixture.get_location_display }}
+    </div>
+  </td>
+</tr>

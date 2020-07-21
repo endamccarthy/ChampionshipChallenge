@@ -1,19 +1,14 @@
-import json
-
 import stripe
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
-# from django.forms.models import inlineformset_factory
-# from django.http import HttpResponseRedirect
+# from django.http import HttpResponse, JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
 
-# from .forms import EntryForm, FinalistForm, PredictionForm
 from .models import Entry, Fixture, Prediction, PredictionOption, Team
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -31,7 +26,7 @@ def leaderboard_page(request):
       'entries': entries,
       'title': 'Leaderboard'
   }
-  return render(request, 'gameplay/leaderboard.html', context)
+  return render(request, 'gameplay/entry_list.html', context)
 
 
 def fixtures_page(request):
@@ -87,26 +82,27 @@ def checkout_page(request, entry_id):
   return render(request, 'gameplay/checkout.html', context)
 
 
+"""
 @login_required
 @csrf_exempt
 def checkout(request, entry_id):
   try:
-    # data = json.loads(request.data)
-
+    # a product is set up on my stripe dashboard
     product_price = stripe.Price.retrieve(
         settings.STRIPE_PRODUCT_SINGLE_ENTRY_PRICE_ID)
-
-    customer = stripe.Customer.list(
+    # retrieve existing customer from stripe or create new one
+    customer_list = stripe.Customer.list(
         email=request.user.email, limit=1)['data']
-    if not customer:
+    if not customer_list:
       customer = stripe.Customer.create(email=request.user.email)
     else:
-      customer = customer[0]
-
+      customer = customer_list[0]
+    # create a new stripe payment intent
     intent = stripe.PaymentIntent.create(
         amount=product_price['unit_amount'],
         currency=product_price['currency'],
         customer=customer,
+        # this might be needed if using a webhook to confirm the entry has been paid
         metadata={
             'entry_id': entry_id,
         }
@@ -145,88 +141,14 @@ def checkout(request, entry_id):
     messages.warning(request, "A serious error occurred.")
 
   return redirect('gameplay_error_page')
-
-
-# If you are testing your webhook locally with the Stripe CLI you
-# can find the endpoint's secret by running `stripe listen`
-# Otherwise, find your endpoint's secret in your webhook settings in the Developer Dashboard
-endpoint_secret = 'whsec_nI20vuVyiu4dODRUsxGlQ1lXdIooaGfb'
-
-
-@csrf_exempt
-def checkout_webhook(request):
-  payload = request.body
-  sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-  event = None
-
-  try:
-    event = stripe.Webhook.construct_event(
-        payload, sig_header, endpoint_secret
-    )
-  except ValueError as e:
-    # Invalid payload
-    print('test1')
-    return HttpResponse(status=400)
-  except stripe.error.SignatureVerificationError as e:
-    # Invalid signature
-    print('test2')
-    return HttpResponse(status=400)
-
-  # Handle the event
-  if event.type == 'payment_intent.succeeded':
-    payment_intent = event.data.object  # contains a stripe.PaymentIntent
-    print(payment_intent['metadata'])
-    print('PaymentIntent was successful!')
-  # else:
-    # Unexpected event type
-    # print('test3')
-    # return HttpResponse(status=400)
-
-  return HttpResponse(status=200)
-
-
-# @login_required
-# @csrf_exempt
-# def stripe_webhook(request):
-#   # You can find your endpoint's secret in your webhook settings
-#   endpoint_secret = 'whsec_gLJRXaEEV0BbTXQqfuIRC5Hiqz63hOQ1'
-
-#   payload = request.body
-#   sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-#   event = None
-
-#   try:
-#     event = stripe.Webhook.construct_event(
-#         payload, sig_header, endpoint_secret
-#     )
-#   except ValueError as e:
-#     # Invalid payload
-#     return HttpResponse(status=400)
-#   except stripe.error.SignatureVerificationError as e:
-#     # Invalid signature
-#     return HttpResponse(status=400)
-
-#   # Handle the checkout.session.completed event
-#   if event['type'] == 'checkout.session.completed':
-#     session = event['data']['object']
-#     print(session)
-#     # try:
-#     #   entry = Entry.objects.get(pk=entry_id)
-#     #   entry.paid = True
-#     #   entry.save()
-#     #   messages.success(request, 'Your payment was received!')
-#     #   return redirect('gameplay_entry', entry_id=entry_id)
-#     # except AttributeError:
-#     #   return redirect('gameplay_error_page')
-
-#   return HttpResponse(status=200)
+"""
 
 
 def entry_page(request, entry_id):
   entry = get_single_entry(entry_id)
   context = {
       'entry': entry,
-      'title': 'Entry'
+      'title': f'{entry.user.first_name} {entry.user.last_name} (Entry {entry.entry_number})'
   }
   return render(request, 'gameplay/entry.html', context)
 
@@ -245,7 +167,7 @@ def user_entries_page(request):
       'entries': entries,
       'title': 'My Entries'
   }
-  return render(request, 'gameplay/user_entries.html', context)
+  return render(request, 'gameplay/entry_list.html', context)
 
 
 def error_page(request):

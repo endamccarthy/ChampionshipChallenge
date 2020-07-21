@@ -15,8 +15,10 @@
 :root {
   --font-01: 'Raleway', sans-serif;
   --font-02: 'Roboto', sans-serif;
-  --background-01: #ebeff5;
-  --background-02: #c5cbd3;
+  --background-color-01: #ebeff5;
+  --background-color-02: #c5cbd3;
+  --symbol-color-01: #6a9ddf;
+  --symbol-color-02: #415f86;
 }
 
 
@@ -29,7 +31,7 @@
 
 body {
   font-family: var(--font-02);
-  background-color: var(--background-01);
+  background-color: var(--background-color-01);
 }
 
 .footer {
@@ -41,7 +43,7 @@ body {
   padding-bottom: 0px;
   padding-top: 10px;
   font-size: 0.8em;
-  background-color: var(--background-02);
+  background-color: var(--background-color-02);
 }
 
 .centered {
@@ -51,6 +53,60 @@ body {
 
 .card-body {
   margin-bottom: 15px;
+}
+
+
+
+/* ***************************************************** */
+/*
+/* TABLE STYLE
+/*
+/* ***************************************************** */
+
+/* make tables have horizontal scrolling */
+table {
+  display: table;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* give each row a top border */
+tr.table_row_border_top td {
+  border-top: 2px solid rgba(211, 211, 211, 0.2);
+}
+
+
+
+/* ***************************************************** */
+/*
+/* SYMBOL STYLE
+/*
+/* ***************************************************** */
+
+.symbol {
+  color: var(--symbol-color-01);
+}
+
+.symbol:hover {
+  cursor: pointer;
+  text-shadow: 0 0 3px var(--symbol-color-02);
+}
+
+
+
+/* ***************************************************** */
+/*
+/* FORM STYLE
+/*
+/* ***************************************************** */
+
+/* make forms the full width of their parent element */
+form {
+  margin: 0px;
+  padding: 0px;
+  display: inline;
 }
 
 
