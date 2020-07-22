@@ -1,7 +1,6 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <!-- <img src="{% static 'media/logo.png' %}" alt="Logo"> -->
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
   <a class="navbar-brand" href="{% url 'gameplay_home' %}">Championship Challenge</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
     aria-expanded="false" aria-label="Toggle navigation">
@@ -9,14 +8,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
+      <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_leaderboard' %}active{% endif %}">
         <a class="nav-link" href="{% url 'gameplay_leaderboard' %}">Leaderboard</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_fixtures' %}active{% endif %}">
         <a class="nav-link" href="{% url 'gameplay_fixtures' %}">Fixtures</a>
       </li>
       {% if user.is_authenticated %}
-      <li class="nav-item active">
+      <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_create_entry' %}active{% endif %}">
         <a class="nav-link" href="{% url 'gameplay_create_entry' %}">Create Entry</a>
       </li>
       {% endif %}

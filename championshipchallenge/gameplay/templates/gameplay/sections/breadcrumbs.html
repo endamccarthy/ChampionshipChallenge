@@ -1,0 +1,18 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'gameplay_home' %}">Home</a></li>
+
+    {% url 'gameplay_leaderboard' as gameplay_leaderboard_url %}
+    {% url 'gameplay_user_entries' as gameplay_user_entries_url %}
+
+    {% if '/entry/' in request.get_full_path %}
+    {% if gameplay_leaderboard_url in request.META.HTTP_REFERER %}
+    <li class="breadcrumb-item"><a href="{% url 'gameplay_leaderboard' %}">Leaderboard</a></li>
+    {% elif gameplay_user_entries_url in request.META.HTTP_REFERER %}
+    <li class="breadcrumb-item"><a href="{% url 'gameplay_user_entries' %}">My Entries</a></li>
+    {% endif %}
+    {% endif %}
+
+    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+  </ol>
+</nav>

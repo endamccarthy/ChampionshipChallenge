@@ -316,6 +316,8 @@ class Entry(models.Model):
       Prediction, related_name='entry_predictions')
   # finalists = models.ManyToManyField(Finalist, related_name = 'entry_finalists')
   # top_scorers = models.ManyToManyField(TopScorer, related_name = 'entry_top_scorers')
+  position = models.IntegerField(
+      default=1, validators=[MinValueValidator(1)], null=False, blank=True)
   entry_number = models.IntegerField(
       default=1, validators=[MinValueValidator(1)], null=False, blank=True)
 

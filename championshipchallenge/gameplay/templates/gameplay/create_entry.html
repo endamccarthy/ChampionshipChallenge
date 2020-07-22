@@ -4,9 +4,10 @@
 
 <div class="row">
   <div class="col-md-7 mb-3">
+    {% include 'gameplay/sections/breadcrumbs.html' %}
     {% include 'gameplay/sections/page_heading.html' %}
 
-    <form method="POST">
+    <form method="POST" onsubmit="return confirm('Once you submit your entry it cannot be changed!');">
       {% csrf_token %}
       <fieldset class="form-group">
 
@@ -40,12 +41,36 @@
 
       </fieldset>
       <div class="form-group">
-        <p>Submit entry and continue to payment?</p>
-        <button class="btn btn-outline-info" type="submit">Yes</button>
+        <p>Submit entry?</p>
+        <!-- <button class="btn btn-outline-info" type="submit">Yes</button> -->
+        <button class="btn btn-outline-info" type="button" data-toggle="modal" data-target="#confirmSubmitModal"
+          id="submitButton">Yes</button>
         <input class="btn btn-danger ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
       </div>
     </form>
 
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmSubmitModal" tabindex="-1" role="dialog" aria-labelledby="confirmSubmitModalTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmSubmitModalLongTitle">Confirm Entry Submission</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Once you submit your entry you will not be able to change it, would you like to submit it now?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Recheck</button>
+        <button type="button" class="btn btn-primary">Yes</button>
+      </div>
+    </div>
   </div>
 </div>
 

@@ -4,19 +4,20 @@
 
 <div class="row">
   <div class="col-md-6 mb-3">
+    {% include 'gameplay/sections/breadcrumbs.html' %}
     <div class="card card-body">
 
-        <form method="POST">
-          {% csrf_token %}
-          <fieldset class="form-group">
-            <legend class="border-bottom mb-4">{{ user.email }}</legend>
-            <p>Are you sure you want to deactivate your account?</p>
-          </fieldset>
-          <div class="form-group">
-            <button class="btn btn-outline-danger" type="submit">Yes</button>
-            <input class="btn btn-info ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
-          </div>
-        </form>
+      <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">{{ user.email }}</legend>
+          <p>Are you sure you want to deactivate your account?</p>
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-danger" type="submit">Yes</button>
+          <input class="btn btn-info ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
+        </div>
+      </form>
 
     </div>
   </div>

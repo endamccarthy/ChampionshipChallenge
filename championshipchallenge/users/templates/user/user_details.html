@@ -4,21 +4,22 @@
 
 <div class="row">
   <div class="col-md-6 mb-3">
+    {% include 'gameplay/sections/breadcrumbs.html' %}
     <div class="card card-body">
 
-        <form method="POST">
-          {% csrf_token %}
-          <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Account Details</legend>
-            {{ form|crispy }}
-          </fieldset>
-          <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Update</button>
-          </div>
-        </form>
-        <small class="text-muted">
-          <a class="text-danger" href="{% url 'deactivate_account' %}">Deactivate Account</a>
-        </small>
+      <form method="POST">
+        {% csrf_token %}
+        <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Account Details</legend>
+          {{ form|crispy }}
+        </fieldset>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Update</button>
+        </div>
+      </form>
+      <small class="text-muted">
+        <a class="text-danger" href="{% url 'deactivate_account' %}">Deactivate Account</a>
+      </small>
 
     </div>
   </div>

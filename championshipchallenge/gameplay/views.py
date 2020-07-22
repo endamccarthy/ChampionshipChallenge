@@ -2,13 +2,12 @@ import stripe
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 # from django.http import HttpResponse, JsonResponse
 # from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
 
-from .models import Entry, Fixture, Prediction, PredictionOption, Team
-
+from .models import Entry, Fixture, Prediction, PredictionOption
+from .utils import get_single_entry, get_all_round_hurling_fixtures
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -30,10 +29,7 @@ def leaderboard_page(request):
 
 
 def fixtures_page(request):
-  fixture_list = Fixture.objects.all().exclude(
-      Q(fixture_round='Q') | Q(fixture_round='S') | Q(
-          fixture_round='F') | Q(sport='F')
-  ).order_by('fixture_round')
+  fixture_list = get_all_round_hurling_fixtures()
 
   context = {
       'fixtures': fixture_list,
@@ -44,34 +40,31 @@ def fixtures_page(request):
 
 @login_required
 def create_entry_page(request):
-  provincial_round_fixtures = Fixture.objects.all().exclude(
-      Q(fixture_round='Q') | Q(fixture_round='S') | Q(
-          fixture_round='F') | Q(sport='F')
-  ).order_by('fixture_round')
+  provincial_round_fixtures = get_all_round_hurling_fixtures()
 
   if request.method == 'POST':
     new_entry = Entry.objects.create(user=request.user)
     for key, value in request.POST.items():
       fixture_id = None
-      if "fixture_prediction" in key:
+      if 'fixture_prediction' in key:
         fixture_id = [int(id) for id in key.split('_') if id.isdigit()][0]
-        prediction_id, created = Prediction.objects.get_or_create(
+        prediction, created = Prediction.objects.get_or_create(
             fixture=Fixture.objects.get(id=fixture_id), prediction=value)
-        if created:
-          new_entry.predictions.add(prediction_id)
+        if prediction:
+          new_entry.predictions.add(prediction)
         continue
-    messages.success(
-        request, 'Your entry has been saved! Please complete payment to ensure your entry is submitted')
-    return redirect('gameplay_checkout_page', new_entry.id)
+    messages.success(request, 'Your entry has been submitted!')
+    return redirect('gameplay_entry', entry_id=new_entry.id)
+
   context = {
       'provincial_round_fixtures': provincial_round_fixtures,
       'prediction_options': PredictionOption,
-      'team_options': Team.objects.all(),
       'title': 'Create Entry'
   }
   return render(request, 'gameplay/create_entry.html', context)
 
 
+"""
 @login_required
 def checkout_page(request, entry_id):
   context = {
@@ -82,7 +75,6 @@ def checkout_page(request, entry_id):
   return render(request, 'gameplay/checkout.html', context)
 
 
-"""
 @login_required
 @csrf_exempt
 def checkout(request, entry_id):
@@ -148,17 +140,9 @@ def entry_page(request, entry_id):
   entry = get_single_entry(entry_id)
   context = {
       'entry': entry,
-      'title': f'{entry.user.first_name} {entry.user.last_name} (Entry {entry.entry_number})'
+      'title': f'Entry - {entry.user.first_name} {entry.user.last_name} ({entry.entry_number})'
   }
   return render(request, 'gameplay/entry.html', context)
-
-
-def get_single_entry(entry_id):
-  try:
-    entry = Entry.objects.get(id=entry_id)
-    return entry
-  except Entry.DoesNotExist:
-    return redirect('gameplay_error_page')
 
 
 def user_entries_page(request):
