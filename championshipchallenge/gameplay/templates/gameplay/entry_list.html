@@ -1,4 +1,5 @@
 {% extends 'gameplay/base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
 
@@ -8,23 +9,21 @@
     {% include 'gameplay/sections/page_heading.html' %}
     <div class="card card-body">
 
-      <table>
+      <table class="table-hover">
         <thead>
           <tr>
-            <th scope="col" style="width: 10%">Position</th>
-            <th class="text-left" scope="col" style="width: 40%">Name</th>
-            <th scope="col" style="width: 30%">Points</th>
-            <th scope="col" style="width: 20%"></th>
+            <th scope="col" style="width: 20%">Position</th>
+            <th class="text-left" scope="col" style="width: 60%">Name</th>
+            <th scope="col" style="width: 20%">Points</th>
           </tr>
         </thead>
         <tbody>
           {% for entry in entries %}
-          <tr class="table_row_border_top">
+          <tr class="table_row_border_top clickable-row" data-href="{% url 'gameplay_entry' entry.id %}">
             <td scope="row">{{ entry.position }}</td>
             <td class="text-left">{{ entry.user.first_name }} {{ entry.user.last_name }} {% if entry.entry_number > 1 %}
               ({{ entry.entry_number }}) {% endif %}</td>
             <td>{{ entry.points }}</td>
-            <td><a class="btn btn-sm btn-info" href="{% url 'gameplay_entry' entry.id %}">View</a></td>
           </tr>
           {% endfor %}
         </tbody>
@@ -34,4 +33,5 @@
   </div>
 </div>
 
+<script src="{% static '/js/entry_list.js' %}"></script>
 {% endblock content %}

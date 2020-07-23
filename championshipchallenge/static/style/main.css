@@ -17,8 +17,10 @@
   --font-02: 'Roboto', sans-serif;
   --background-color-01: #ebeff5;
   --background-color-02: #c5cbd3;
+  --background-color-03: #9bf7d8;
   --symbol-color-01: #6a9ddf;
   --symbol-color-02: #415f86;
+  --line-color-01: #ebeffb;
 }
 
 
@@ -32,6 +34,14 @@
 body {
   font-family: var(--font-02);
   background-color: var(--background-color-01);
+}
+
+hr {
+  background-color: var(--symbol-color-01);
+}
+
+.background-color-03 {
+  background-color: var(--background-color-03);
 }
 
 .footer {
@@ -53,6 +63,19 @@ body {
 
 .card-body {
   margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+
+/* ***************************************************** */
+/*
+/* TEXT STYLE
+/*
+/* ***************************************************** */
+
+.text-small {
+  font-size: 13px;
 }
 
 
@@ -72,11 +95,15 @@ table {
   border-collapse: collapse;
 }
 
-/* give each row a top border */
-tr.table_row_border_top td {
-  border-top: 2px solid rgba(211, 211, 211, 0.2);
+/* on tables with hover class, rows are clickable and should have a pointer */
+table.table-hover tbody tr:hover {
+  cursor: pointer;
 }
 
+/* give each row a top border */
+tr.table_row_border_top td {
+  border-top: 1px solid var(--line-color-01);
+}
 
 
 /* ***************************************************** */

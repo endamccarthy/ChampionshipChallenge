@@ -327,10 +327,19 @@ class Entry(models.Model):
             fields=['user', 'datetime'], name='unique entry')
     ]
 
+  def get_total_number_of_entries(self):
+    return Entry.objects.all().count()
+
+  def get_number_of_entries_by_user(self):
+    return Entry.objects.filter(user=self.user).count()
+
+  def get_number_of_tied_entries(self):
+    return Entry.objects.filter(position=self.position).count()
+
   def save(self, *args, **kwargs):  # pylint: disable=signature-differs
     # if the entry is new (not being edited)
     if self.pk is None:
-      count = Entry.objects.filter(user=self.user).count()
+      count = self.get_number_of_entries_by_user()
       if count >= 1:
         self.entry_number = count + 1
     super(Entry, self).save(*args, **kwargs)

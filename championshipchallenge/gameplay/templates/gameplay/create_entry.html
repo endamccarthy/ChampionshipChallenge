@@ -1,4 +1,5 @@
 {% extends 'gameplay/base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
 
@@ -7,7 +8,7 @@
     {% include 'gameplay/sections/breadcrumbs.html' %}
     {% include 'gameplay/sections/page_heading.html' %}
 
-    <form method="POST" onsubmit="return confirm('Once you submit your entry it cannot be changed!');">
+    <form method="POST" id="form">
       {% csrf_token %}
       <fieldset class="form-group">
 
@@ -64,14 +65,16 @@
         </button>
       </div>
       <div class="modal-body">
-        Once you submit your entry you will not be able to change it, would you like to submit it now?
+        <p>Once you submit your entry you will not be able to change it!</p>
+        <p>Would you like to submit it now?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Recheck</button>
-        <button type="button" class="btn btn-primary">Yes</button>
+        <button type="button" class="btn btn-primary" id="confirmSubmitForm">Yes</button>
       </div>
     </div>
   </div>
 </div>
 
+<script src="{% static '/js/create_entry.js' %}"></script>
 {% endblock content %}

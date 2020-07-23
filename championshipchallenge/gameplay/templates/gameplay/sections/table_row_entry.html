@@ -19,7 +19,7 @@
 <tr class="text-left">
   <td colspan="4" class="hiddenRow">
     <div class="accordion-body collapse m-2" id="item_fixture{{ item.fixture.id }}">
-      <b>Date: </b>{{ item.fixture.datetime }} <br>
+      <b>Date: </b>{{ item.fixture.datetime|date:"jS F Y, g:i a" }} <br>
       <b>Location: </b>{{ item.fixture.get_location_display }}
     </div>
   </td>

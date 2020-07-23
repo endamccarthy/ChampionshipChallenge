@@ -140,7 +140,7 @@ def entry_page(request, entry_id):
   entry = get_single_entry(entry_id)
   context = {
       'entry': entry,
-      'title': f'Entry - {entry.user.first_name} {entry.user.last_name} ({entry.entry_number})'
+      'title': f'Entry - {entry.user.first_name} {entry.user.last_name}'
   }
   return render(request, 'gameplay/entry.html', context)
 

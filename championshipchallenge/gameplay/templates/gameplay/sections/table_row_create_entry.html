@@ -18,7 +18,7 @@
 <tr class="text-left">
   <td colspan="4" class="hiddenRow">
     <div class="accordion-body collapse m-2" id="item{{ item.id }}">
-      <b>Date: </b>{{ item.datetime }} <br>
+      <b>Date: </b>{{ item.datetime|date:"jS F Y, g:i a" }} <br>
       <b>Location: </b>{{ item.get_location_display }}
     </div>
   </td>
