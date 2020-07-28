@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # ######################################################################################## #
@@ -120,10 +120,22 @@ WSGI_APPLICATION = 'championshipchallenge.wsgi.application'
 
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_ENGINE'),
+        'NAME': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_NAME'),
+        'USER': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_USER'),
+        'PASSWORD': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_PASSWORD'),
+        'HOST': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_HOST'),
+        'PORT': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_PORT')
     }
 }
 
