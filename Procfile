@@ -1,1 +1,1 @@
-web: gunicorn championshipchallenge.wsgi.application
+web: gunicorn championshipchallenge.wsgi
