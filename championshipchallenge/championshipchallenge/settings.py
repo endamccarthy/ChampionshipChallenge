@@ -28,7 +28,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2lysrt8q**)37kmzgpgu1+je@d*j)8a_u!g93chcx(yk&#%ir3'
+SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,7 +41,7 @@ ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 # ######################################################################################## #
 
 '''
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 DEBUG = FALSE
 ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 '''
