@@ -38,7 +38,8 @@ DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
 DEBUG = False
 # DEBUG = DEVELOPMENT_MODE
 
-ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['championship-challenge.herokuapp.com',
+                 'championship-challenge-test.herokuapp.com', '127.0.0.1']
 
 
 # ######################################################################################## #
