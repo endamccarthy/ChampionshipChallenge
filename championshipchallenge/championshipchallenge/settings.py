@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # ######################################################################################## #
 # SETTINGS FOR BASE DIRECTORY
@@ -304,3 +305,7 @@ else:
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # ######################################################################################## #
+
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
