@@ -56,8 +56,8 @@ ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 # ######################################################################################## #
 
 INSTALLED_APPS = [
-    'gameplay.apps.GameplayConfig',
-    'users.apps.UsersConfig',
+    'championshipchallenge.gameplay.apps.GameplayConfig',
+    'championshipchallenge.users.apps.UsersConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
