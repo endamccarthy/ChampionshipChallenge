@@ -307,7 +307,6 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # if not DEVELOPMENT_MODE:
 #   # look to s3 buckets for all static files including js and css
 #   STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # ######################################################################################## #
 
