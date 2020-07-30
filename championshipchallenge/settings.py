@@ -29,8 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
-SECRET_KEY = 'fb999c1a237a1f82527a16d0250e140d0bf474f3755cd6307c'
+SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 
 # local DEVELOPMENT_MODE env var is set to True, Heroku env var is set to False
 DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
