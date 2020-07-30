@@ -38,12 +38,11 @@ DEVELOPMENT_MODE = (os.environ.get('DEVELOPMENT_MODE') == 'True')
 DEBUG = DEVELOPMENT_MODE
 
 
-# if DEVELOPMENT_MODE:
-#   ALLOWED_HOSTS = []
-# else:
-#   ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
+if DEVELOPMENT_MODE:
+  ALLOWED_HOSTS = []
+else:
+  ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 
-ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
 
 # ######################################################################################## #
 # SETTINGS FOR PRODUCTION
@@ -311,4 +310,4 @@ if not DEVELOPMENT_MODE:
 # ######################################################################################## #
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)
