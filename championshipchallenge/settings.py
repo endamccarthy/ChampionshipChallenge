@@ -32,10 +32,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 
 # local DEVELOPMENT_MODE env var is set to True, Heroku env var is set to False
-DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
+DEVELOPMENT_MODE = (os.environ.get('DEVELOPMENT_MODE') == 'True')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (DEVELOPMENT_MODE == 'True')
+DEBUG = DEVELOPMENT_MODE
 
 ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
 
@@ -299,11 +299,9 @@ AWS_DEFAULT_ACL = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# if not DEVELOPMENT_MODE:
-
-# look to s3 buckets for all static files including js and css
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if not DEVELOPMENT_MODE:
+  # look to s3 buckets for all static files including js and css
+  STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # ######################################################################################## #
 
