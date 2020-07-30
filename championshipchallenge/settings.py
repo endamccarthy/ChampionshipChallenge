@@ -35,10 +35,9 @@ SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = DEVELOPMENT_MODE
+DEBUG = DEVELOPMENT_MODE
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
 
 
 # ######################################################################################## #
@@ -192,7 +191,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # needed for Heroku (staticfiles folder will be created)
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
@@ -291,22 +290,22 @@ else:
 # SETTINGS FOR AMAZON AWS S3
 # ######################################################################################## #
 
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = None
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
 
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-# # if not DEVELOPMENT_MODE:
+# if not DEVELOPMENT_MODE:
 
-# # look to s3 buckets for all static files including js and css
+# look to s3 buckets for all static files including js and css
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # ######################################################################################## #
 
 
 # Activate Django-Heroku.
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
