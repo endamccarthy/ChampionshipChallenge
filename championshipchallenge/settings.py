@@ -37,8 +37,13 @@ DEVELOPMENT_MODE = (os.environ.get('DEVELOPMENT_MODE') == 'True')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = DEVELOPMENT_MODE
 
-ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
 
+# if DEVELOPMENT_MODE:
+#   ALLOWED_HOSTS = []
+# else:
+#   ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
+
+ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
 
 # ######################################################################################## #
 # SETTINGS FOR PRODUCTION
@@ -85,7 +90,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -193,9 +198,9 @@ STATIC_URL = '/static/'
 # needed for Heroku (staticfiles folder will be created)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static')
+# ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
@@ -299,46 +304,11 @@ AWS_DEFAULT_ACL = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-if not DEVELOPMENT_MODE:
-  # look to s3 buckets for all static files including js and css
-  STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# if not DEVELOPMENT_MODE:
+#   # look to s3 buckets for all static files including js and css
+#   STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # ######################################################################################## #
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
-#                        'pathname=%(pathname)s lineno=%(lineno)s ' +
-#                        'funcname=%(funcName)s %(message)s'),
-#             'datefmt': '%Y-%m-%d %H:%M:%S'
-#         },
-#         'simple': {
-#             'format': '%(levelname)s %(message)s'
-#         }
-#     },
-#     'handlers': {
-#         'null': {
-#             'level': 'DEBUG',
-#             'class': 'logging.NullHandler',
-#         },
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose'
-#         }
-#     },
-#     'loggers': {
-#         'testlogger': {
-#             'handlers': ['console'],
-#             'level': 'INFO',
-#         }
-#     }
-# }
-
-# DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
