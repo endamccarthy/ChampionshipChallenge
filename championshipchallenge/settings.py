@@ -309,5 +309,5 @@ if not DEVELOPMENT_MODE:
 
 # ######################################################################################## #
 
-# Activate Django-Heroku.
+# Activate Django-Heroku (staticfiles set to false to make sure heroku looks to s3)
 django_heroku.settings(locals(), staticfiles=False)
