@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 
 # ######################################################################################## #
 # SETTINGS FOR BASE DIRECTORY
@@ -30,10 +31,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 
+# local DEVELOPMENT_MODE env var is set to True, Heroku env var is set to False
+DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = DEVELOPMENT_MODE
 
-ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
+ALLOWED_HOSTS = ['championship-challenge.herokuapp.com',
+                 'championship-challenge-test.herokuapp.com', '127.0.0.1']
 
 
 # ######################################################################################## #
@@ -42,7 +48,7 @@ ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 
 '''
 SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
-DEBUG = FALSE
+DEBUG = os.environ.get('DEBUG_VALUE')
 ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 '''
 
@@ -52,8 +58,8 @@ ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
 # ######################################################################################## #
 
 INSTALLED_APPS = [
-    'gameplay.apps.GameplayConfig',
     'users.apps.UsersConfig',
+    'gameplay.apps.GameplayConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,7 +76,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'phonenumber_field',
     'stripe',
-    'storages'
+    'storages',
 ]
 
 
@@ -80,6 +86,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,6 +137,18 @@ DATABASES = {
 }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_ENGINE'),
+#         'NAME': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_NAME'),
+#         'USER': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_USER'),
+#         'PASSWORD': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_PASSWORD'),
+#         'HOST': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_HOST'),
+#         'PORT': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_PORT')
+#     }
+# }
+
+
 # ######################################################################################## #
 # SETTINGS FOR PASSWORD VALIDATION
 # ######################################################################################## #
@@ -170,11 +191,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# this line is needed for heroku
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# needed for Heroku (staticfiles folder will be created)
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
@@ -252,12 +276,12 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS_GMAIL')
 STRIPE_PRODUCT_SINGLE_ENTRY_PRICE_ID = os.environ.get(
     'STRIPE_PRODUCT_SINGLE_ENTRY_PRICE_ID')
 
-if DEBUG:
+if DEVELOPMENT_MODE:
   # test keys
   STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
   STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
 else:
-  # IMPORTANT! - if site is actually being deployed to production, switch from test to live keys below
+  # IMPORTANT! - if the payment is actually going live, switch to live keys below
   STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_TEST')
   STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY_TEST')
   # STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY_LIVE')
@@ -268,13 +292,22 @@ else:
 # SETTINGS FOR AMAZON AWS S3
 # ######################################################################################## #
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3BotoStorage'
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# # if not DEVELOPMENT_MODE:
+
+# # look to s3 buckets for all static files including js and css
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # ######################################################################################## #
+
+
+# Activate Django-Heroku.
+# django_heroku.settings(locals())
