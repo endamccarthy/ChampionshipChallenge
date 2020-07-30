@@ -35,7 +35,7 @@ SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = DEVELOPMENT_MODE
+DEBUG = (DEVELOPMENT_MODE == 'True')
 
 ALLOWED_HOSTS = ['championship-challenge.herokuapp.com', '127.0.0.1']
 
