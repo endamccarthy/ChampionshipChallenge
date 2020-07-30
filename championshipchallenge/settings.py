@@ -35,7 +35,7 @@ SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
 DEVELOPMENT_MODE = os.environ.get('DEVELOPMENT_MODE')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = DEVELOPMENT_MODE
 
 ALLOWED_HOSTS = ['championship-challenge.herokuapp.com',
@@ -193,7 +193,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # needed for Heroku (staticfiles folder will be created)
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
@@ -310,4 +310,4 @@ else:
 
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
