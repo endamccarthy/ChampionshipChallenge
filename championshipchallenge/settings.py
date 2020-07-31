@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # ######################################################################################## #
-# SETTINGS FOR DEVELOPMENT (NOT FOR PRODUCTION)
+# SETTINGS FOR DEVELOPMENT AND PRODUCTION
 # ######################################################################################## #
 
 # Quick-start development settings - unsuitable for production
@@ -43,17 +43,6 @@ if DEVELOPMENT_MODE:
   ALLOWED_HOSTS = []
 else:
   ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
-
-
-# ######################################################################################## #
-# SETTINGS FOR PRODUCTION
-# ######################################################################################## #
-
-'''
-SECRET_KEY = os.environ.get('CHAMPIONSHIP_CHALLENGE_SECRET_KEY')
-DEBUG = os.environ.get('DEBUG_VALUE')
-ALLOWED_HOSTS = ['championship-challenge.herokuapp.com']
-'''
 
 
 # ######################################################################################## #
@@ -127,7 +116,7 @@ WSGI_APPLICATION = 'championshipchallenge.wsgi.application'
 
 
 # ######################################################################################## #
-# SETTINGS FOR DATABASE
+# SETTINGS FOR LOCAL DATABASE
 # ######################################################################################## #
 
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -139,19 +128,13 @@ DATABASES = {
     }
 }
 
+
+# ######################################################################################## #
+# SETTINGS FOR PRODUCTION DATABASE (AWS postgresql)
+# ######################################################################################## #
+
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_ENGINE'),
-#         'NAME': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_NAME'),
-#         'USER': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_USER'),
-#         'PASSWORD': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_PASSWORD'),
-#         'HOST': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_HOST'),
-#         'PORT': os.environ.get('CHAMPIONSHIP_CHALLENGE_DB_PORT')
-#     }
-# }
 
 
 # ######################################################################################## #
@@ -310,6 +293,9 @@ if not DEVELOPMENT_MODE:
   # look to s3 buckets for all static files including js and css
   STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
+
+# ######################################################################################## #
+# SETTINGS FOR HEROKU CONNECTION
 # ######################################################################################## #
 
 # Activate Django-Heroku (staticfiles set to false to make sure heroku looks to s3)
