@@ -21,6 +21,7 @@
   --symbol-color-01: #6a9ddf;
   --symbol-color-02: #415f86;
   --line-color-01: #ebeffb;
+  --row-hover-color-01: #e1ebf8;
 }
 
 
@@ -65,6 +66,8 @@ hr {
   margin-bottom: 15px;
   padding: 15px;
   border-radius: 8px;
+  /* make cards have horizontal scrolling */
+  overflow-x: auto;
 }
 
 
@@ -86,25 +89,35 @@ hr {
 /*
 /* ***************************************************** */
 
-/* make tables have horizontal scrolling */
 table {
   display: table;
-  overflow-x: auto;
   white-space: nowrap;
   width: 100%;
   border-collapse: collapse;
 }
 
 /* on tables with hover class, rows are clickable and should have a pointer */
-table.table-hover tbody tr:hover {
+/* table.table-hover tbody tr.row-hover:hover {
   cursor: pointer;
-}
+} */
 
 /* give each row a top border */
-tr.table_row_border_top td {
+/* tr.table_row_border_top td {
+  border-top: 1px solid var(--line-color-01);
+} */
+
+.clickable-row td {
   border-top: 1px solid var(--line-color-01);
 }
 
+.clickable-row:hover {
+  background-color: var(--row-hover-color-01);
+  cursor: pointer;
+}
+
+/* tr.clickable-row:hover {
+  background-color: var(--row-hover-color-01);
+} */
 
 /* ***************************************************** */
 /*
