@@ -9,3 +9,4 @@ install:
 # command to run tests
 script:
   - python manage.py test gameplay
+  - python manage.py test functional_tests
