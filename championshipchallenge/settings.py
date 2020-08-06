@@ -91,6 +91,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'championshipchallenge.urls'
 
+# ensure http redirects to https automatically
 if not DEVELOPMENT_MODE:
   SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
   SECURE_SSL_REDIRECT = True

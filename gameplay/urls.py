@@ -17,5 +17,5 @@ urlpatterns = [
          gameplay_views.entry_page, name='gameplay_entry'),
     path('entries/', gameplay_views.user_entries_page,
          name='gameplay_user_entries'),
-    path('error/', gameplay_views.error_page, name='gameplay_error_page'),
+    path('error/', gameplay_views.error_page, name='gameplay_error'),
 ]
