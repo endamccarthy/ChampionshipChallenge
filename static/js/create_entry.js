@@ -1,5 +1,5 @@
-const form = document.querySelector('#form'),
-  confirmSubmitForm = document.querySelector('#confirmSubmitForm');
+const form = document.getElementById('form'),
+  confirmSubmitForm = document.getElementById('confirmSubmitForm');
 
 confirmSubmitForm.addEventListener('click', function () {
   form.submit();
