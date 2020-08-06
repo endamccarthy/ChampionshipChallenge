@@ -132,7 +132,7 @@ def checkout(request, entry_id):
   except Exception as e:
     messages.warning(request, "A serious error occurred.")
 
-  return redirect('gameplay_error_page')
+  return redirect('gameplay_error')
 """
 
 
