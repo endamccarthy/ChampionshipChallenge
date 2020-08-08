@@ -40,18 +40,35 @@
           </table>
         </div>
 
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card card-body">
+              <p>Submit entry?</p>
+              <table style="width:40%">
+                <tbody>
+                  <tr>
+                    <td scope="row">
+                      <button class="btn btn-info" type="button" data-toggle="modal" data-target="#confirmSubmitModal"
+                        id="submitButton">Yes</button>
+                    </td>
+                    <td>
+                      <input class="btn btn-warning ml-2" type=button value="Cancel"
+                        onClick="javascript:history.go(-1);">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
       </fieldset>
-      <div class="form-group">
-        <p>Submit entry?</p>
-        <!-- <button class="btn btn-outline-info" type="submit">Yes</button> -->
-        <button class="btn btn-info" type="button" data-toggle="modal" data-target="#confirmSubmitModal"
-          id="submitButton">Yes</button>
-        <input class="btn btn-warning ml-2" type=button value="Cancel" onClick="javascript:history.go(-1);">
-      </div>
+
     </form>
 
   </div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="confirmSubmitModal" tabindex="-1" role="dialog" aria-labelledby="confirmSubmitModalTitle"

@@ -1,9 +1,8 @@
-<tr class="table_row_border_top">
+<tr class="clickable-row" data-toggle="collapse" data-target="#item_fixture{{ item.fixture.id }}">
   <td scope="row">
-    <i class="symbol fas fa-chevron-down fa-1x" data-toggle="collapse"
-      data-target="#item_fixture{{ item.fixture.id }}"></i>
+    <i class="symbol fas fa-chevron-down fa-1x"></i>
   </td>
-  <td scope="row">{{ item.fixture.fixture_round }}</td>
+  <td>{{ item.fixture.fixture_round }}</td>
   <td>{{ item.fixture.team_A.get_name_display }}</td>
   <td>{{ item.fixture.team_B.get_name_display }}</td>
   <td>
@@ -17,7 +16,7 @@
   </td>
 </tr>
 <tr class="text-left">
-  <td colspan="4" class="hiddenRow">
+  <td colspan="5" scope="row">
     <div class="accordion-body collapse m-2" id="item_fixture{{ item.fixture.id }}">
       <b>Date: </b>{{ item.fixture.datetime|date:"jS F Y, g:i a" }} <br>
       <b>Location: </b>{{ item.fixture.get_location_display }}
