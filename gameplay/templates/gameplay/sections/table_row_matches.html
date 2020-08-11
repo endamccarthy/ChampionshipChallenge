@@ -1,0 +1,52 @@
+<tr class="accordion-toggle clickable-row" data-toggle="collapse" data-target="#match{{ match.fixture.id }}">
+  <td scope="row">
+    <i class="symbol fas fa-chevron-down fa-1x"></i>
+  </td>
+  <td>{{ match.fixture.fixture_round }}</td>
+  <td>{{ match.fixture.team_A.get_name_display }}</td>
+  {% if match.result %}
+  <td>{{ match.result.team_A_goals }}-{{ match.result.team_A_points }}</td>
+  <td>{{ match.result.team_B_goals }}-{{ match.result.team_B_points }}</td>
+  {% else %}
+  <td>-</td>
+  <td>-</td>
+  {% endif %}
+  <td>{{ match.fixture.team_B.get_name_display }}</td>
+</tr>
+<tr class="text-left">
+  <td colspan="6" scope="row">
+    <div class="accordion-body collapse m-2" id="match{{ match.fixture.id }}">
+      <b>Date: </b>{{ match.fixture.datetime|date:"jS F Y, g:i a" }}
+      <br>
+      <b>Location: </b>{{ match.fixture.get_location_display }}
+      <br>
+      {% if match.scorers %}
+      <br>
+      <h5>Scorers:</h5>
+      <b>{{ match.fixture.team_A.get_name_display }}</b>
+      <br>
+      {% for scorer in match.scorers %}
+      {% if scorer.player.team == match.fixture.team_A %}
+      {{ scorer.player.first_name }} {{ scorer.player.last_name }} {{ scorer.get_goals_and_points_total }}
+      {% if scorer.goals_placed_balls > 0 or scorer.points_placed_balls > 0 %}
+      <small>({{ scorer.goals_open_play }}-{{ scorer.points_open_play }} from play)</small>
+      {% endif %}
+      <br>
+      {% endif %}
+      {% endfor %}
+      <br>
+      <b>{{ match.fixture.team_B.get_name_display }}</b>
+      <br>
+      {% for scorer in match.scorers %}
+      {% if scorer.player.team == match.fixture.team_B %}
+      {{ scorer.player.first_name }} {{ scorer.player.last_name }} {{ scorer.get_goals_and_points_total }}
+      {% if scorer.goals_placed_balls > 0 or scorer.points_placed_balls > 0 %}
+      <small>({{ scorer.goals_open_play }}-{{ scorer.points_open_play }} from play)</small>
+      {% endif %}
+      <br>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+  </td>
+</tr>

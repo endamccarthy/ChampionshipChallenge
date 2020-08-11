@@ -6,7 +6,7 @@ urlpatterns = [
     path('', gameplay_views.home_page, name='gameplay_home'),
     path('leaderboard/', gameplay_views.leaderboard_page,
          name='gameplay_leaderboard'),
-    path('fixtures/', gameplay_views.fixtures_page, name='gameplay_fixtures'),
+    path('matches/', gameplay_views.matches_page, name='gameplay_matches'),
     path('create-entry/', gameplay_views.create_entry_page,
          name='gameplay_create_entry'),
     # path('checkout-page/<str:entry_id>/',

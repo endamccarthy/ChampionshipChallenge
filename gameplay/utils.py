@@ -1,7 +1,26 @@
 from django.db.models import Q
 from django.shortcuts import redirect
 
-from .models import Entry, Fixture, PredictionOption, Result
+from .models import Entry, Fixture, PredictionOption, Result, Score
+
+
+def get_all_round_hurling_matches():
+  matches = []
+  fixtures = get_all_round_hurling_fixtures()
+
+  for fixture in fixtures:
+    match = {}
+    match['fixture'] = fixture
+    try:
+      result = Result.objects.get(fixture=fixture)
+      if result.final_result:
+        match['result'] = result
+        match['scorers'] = get_scorers_for_result(result)
+    except Result.DoesNotExist:
+      return redirect('gameplay_error_page')
+    matches.append(match)
+
+  return matches
 
 
 def get_all_round_hurling_fixtures():
@@ -9,6 +28,12 @@ def get_all_round_hurling_fixtures():
       Q(fixture_round='Q') | Q(fixture_round='S') | Q(
           fixture_round='F') | Q(sport='F')
   ).order_by('fixture_round')
+
+
+def get_scorers_for_result(result):
+  scorers = Score.objects.filter(
+      fixture=result.fixture).order_by('-total_score_value')
+  return scorers
 
 
 def get_single_entry(entry_id):
