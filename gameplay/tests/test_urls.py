@@ -14,9 +14,9 @@ class TestUrls(SimpleTestCase):
     url = reverse('gameplay_leaderboard')
     self.assertEqual(resolve(url).func, gameplay_views.leaderboard_page)
 
-  def test_gameplay_fixtures_resolves(self):
-    url = reverse('gameplay_fixtures')
-    self.assertEqual(resolve(url).func, gameplay_views.fixtures_page)
+  def test_gameplay_matches_resolves(self):
+    url = reverse('gameplay_matches')
+    self.assertEqual(resolve(url).func, gameplay_views.matches_page)
 
   def test_gameplay_create_entry_resolves(self):
     url = reverse('gameplay_create_entry')
