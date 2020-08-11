@@ -10,11 +10,11 @@
     <div class="card card-body">
       <h4 class="mb-4">Munster Championship</h4>
       <table>
-        {% include 'gameplay/sections/table_header_fixtures.html' %}
+        {% include 'gameplay/sections/table_header_matches.html' %}
         <tbody>
-          {% for fixture in fixtures %}
-          {% if fixture.region == 'M' %}
-          {% include 'gameplay/sections/table_row_fixtures.html' %}
+          {% for match in matches %}
+          {% if match.fixture.region == 'M' %}
+          {% include 'gameplay/sections/table_row_matches.html' %}
           {% endif %}
           {% endfor %}
         </tbody>
@@ -24,11 +24,11 @@
     <div class="card card-body">
       <h4 class="mb-4">Leinster Championship</h4>
       <table>
-        {% include 'gameplay/sections/table_header_fixtures.html' %}
+        {% include 'gameplay/sections/table_header_matches.html' %}
         <tbody>
-          {% for fixture in fixtures %}
-          {% if fixture.region == 'L' %}
-          {% include 'gameplay/sections/table_row_fixtures.html' %}
+          {% for match in matches %}
+          {% if match.fixture.region == 'L' %}
+          {% include 'gameplay/sections/table_row_matches.html' %}
           {% endif %}
           {% endfor %}
         </tbody>

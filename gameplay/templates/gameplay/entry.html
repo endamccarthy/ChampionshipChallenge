@@ -24,7 +24,8 @@
                 </span>
               </h4>
               {% if entry.get_number_of_tied_entries > 0 %}
-              <span class="text-muted text-small">Tied with {{ entry.get_number_of_tied_entries }} others</span>
+              <span class="text-muted text-small">Tied with {{ entry.get_number_of_tied_entries }}
+                other{% if entry.get_number_of_tied_entries > 1 %}s{% endif %}</span>
               {% endif %}
             </div>
           </div>

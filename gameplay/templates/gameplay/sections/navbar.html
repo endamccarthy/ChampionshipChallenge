@@ -9,8 +9,8 @@
       <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_leaderboard' %}active{% endif %}">
         <a class="nav-link" href="{% url 'gameplay_leaderboard' %}">Leaderboard</a>
       </li>
-      <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_fixtures' %}active{% endif %}">
-        <a class="nav-link" href="{% url 'gameplay_fixtures' %}">Fixtures</a>
+      <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_matches' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'gameplay_matches' %}">Matches</a>
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item {% if request.resolver_match.url_name == 'gameplay_create_entry' %}active{% endif %}">

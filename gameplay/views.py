@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
 from .models import Entry, Fixture, Prediction, PredictionOption
-from .utils import get_single_entry, get_all_round_hurling_fixtures
+from .utils import get_single_entry, get_all_round_hurling_matches, get_all_round_hurling_fixtures
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -28,14 +28,14 @@ def leaderboard_page(request):
   return render(request, 'gameplay/entry_list.html', context)
 
 
-def fixtures_page(request):
-  fixture_list = get_all_round_hurling_fixtures()
+def matches_page(request):
+  matches_list = get_all_round_hurling_matches()
 
   context = {
-      'fixtures': fixture_list,
-      'title': 'Fixtures'
+      'matches': matches_list,
+      'title': 'Matches'
   }
-  return render(request, 'gameplay/fixtures.html', context)
+  return render(request, 'gameplay/matches.html', context)
 
 
 @login_required

@@ -214,6 +214,8 @@ class Score(models.Model):
       default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
   points_placed_balls = models.IntegerField(
       default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+  total_score_value = models.IntegerField(
+      default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], blank=True)
 
   class Meta:
     constraints = [
@@ -236,8 +238,19 @@ class Score(models.Model):
       raise ValidationError(
           _('The result for this fixture does not exist, try creating a new result first'))
 
+  def save(self, *args, **kwargs):  # pylint: disable=signature-differs
+    self.total_score_value = ((self.goals_open_play + self.goals_placed_balls)
+                              * 3) + (self.points_open_play + self.points_placed_balls)
+    super(Score, self).save(*args, **kwargs)
+
+  def get_goals_and_points_total(self):
+    return f'{self.goals_open_play + self.goals_placed_balls}-{self.points_open_play + self.points_placed_balls}'
+
+  def get_goals_and_points_from_play(self):
+    return f'{self.goals_open_play}-{self.points_open_play}'
+
   def __str__(self):
-    return f'{self.fixture} - {self.player.first_name} {self.player.last_name}'
+    return f'{self.fixture} - {self.player.first_name} {self.player.last_name} - {self.get_goals_and_points_total()}'
 
 
 class Prediction(models.Model):
@@ -334,7 +347,7 @@ class Entry(models.Model):
     return Entry.objects.filter(user=self.user).count()
 
   def get_number_of_tied_entries(self):
-    return Entry.objects.filter(position=self.position).count()
+    return Entry.objects.filter(position=self.position).exclude(id=self.id).count()
 
   def save(self, *args, **kwargs):  # pylint: disable=signature-differs
     # if the entry is new (not being edited)
