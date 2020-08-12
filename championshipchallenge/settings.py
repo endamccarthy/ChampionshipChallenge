@@ -135,11 +135,11 @@ WSGI_APPLICATION = 'championshipchallenge.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'championshipchallenge',
-        'USER': 'endamccarthy',
-        'PASSWORD': '!July2020!',
-        'HOST': 'championshipchallenge.cr01jafoww1u.eu-west-1.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': os.environ.get('CHAMPIONSHIP_CHALLENGE_DATABASE_NAME'),
+        'USER': os.environ.get('CHAMPIONSHIP_CHALLENGE_DATABASE_USER'),
+        'PASSWORD': os.environ.get('CHAMPIONSHIP_CHALLENGE_DATABASE_PASSWORD'),
+        'HOST': os.environ.get('CHAMPIONSHIP_CHALLENGE_DATABASE_HOST'),
+        'PORT': os.environ.get('CHAMPIONSHIP_CHALLENGE_DATABASE_PORT'),
     }
 }
 
