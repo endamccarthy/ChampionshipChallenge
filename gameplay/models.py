@@ -216,8 +216,6 @@ class Score(models.Model):
       default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
   total_score_value = models.IntegerField(
       default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], blank=True)
-  test_field = models.IntegerField(
-      default=0, validators=[MinValueValidator(0), MaxValueValidator(100)], blank=True)
 
   class Meta:
     constraints = [
@@ -243,7 +241,6 @@ class Score(models.Model):
   def save(self, *args, **kwargs):  # pylint: disable=signature-differs
     self.total_score_value = ((self.goals_open_play + self.goals_placed_balls)
                               * 3) + (self.points_open_play + self.points_placed_balls)
-    self.test_field = 5
     super(Score, self).save(*args, **kwargs)
 
   def get_goals_and_points_total(self):
