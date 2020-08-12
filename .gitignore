@@ -140,7 +140,7 @@ cython_debug/
 
 # personal ignores
 .DS_Store
-# migrations/
+migrations/
 *.vscode
 *.drawio
 *.icloud
