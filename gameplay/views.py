@@ -1,15 +1,15 @@
-import stripe
-from django.conf import settings
+# import stripe
+# from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponse, JsonResponse
 # from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
 
-from .models import Entry, Fixture, Prediction, PredictionOption
-from .utils import get_single_entry, get_all_round_hurling_matches, get_all_round_hurling_fixtures
+from .models import Entry, Fixture, Prediction, PredictionOption, Region
+from .utils import get_single_instance, get_all_round_matches_details, get_all_round_fixtures
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+# stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 def home_page(request):
@@ -29,10 +29,11 @@ def leaderboard_page(request):
 
 
 def matches_page(request):
-  matches_list = get_all_round_hurling_matches()
+  matches_list = get_all_round_matches_details()
 
   context = {
       'matches': matches_list,
+      'regions': Region,
       'title': 'Matches'
   }
   return render(request, 'gameplay/matches.html', context)
@@ -40,7 +41,7 @@ def matches_page(request):
 
 @login_required
 def create_entry_page(request):
-  provincial_round_fixtures = get_all_round_hurling_fixtures()
+  round_fixtures = get_all_round_fixtures()
 
   if request.method == 'POST':
     new_entry = Entry.objects.create(user=request.user)
@@ -57,8 +58,9 @@ def create_entry_page(request):
     return redirect('gameplay_entry', entry_id=new_entry.id)
 
   context = {
-      'provincial_round_fixtures': provincial_round_fixtures,
+      'round_fixtures': round_fixtures,
       'prediction_options': PredictionOption,
+      'regions': Region,
       'title': 'Create Entry'
   }
   return render(request, 'gameplay/create_entry.html', context)
@@ -137,9 +139,10 @@ def checkout(request, entry_id):
 
 
 def entry_page(request, entry_id):
-  entry = get_single_entry(entry_id)
+  entry = get_single_instance(Entry, entry_id)
   context = {
       'entry': entry,
+      'regions': Region,
       'title': f'Entry - {entry.user.first_name} {entry.user.last_name}'
   }
   return render(request, 'gameplay/entry.html', context)

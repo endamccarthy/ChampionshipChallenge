@@ -4,9 +4,9 @@ from django.shortcuts import redirect
 from .models import Entry, Fixture, PredictionOption, Result, Score
 
 
-def get_all_round_hurling_matches():
+def get_all_round_matches_details():
   matches = []
-  fixtures = get_all_round_hurling_fixtures()
+  fixtures = get_all_round_fixtures()
 
   for fixture in fixtures:
     match = {}
@@ -23,11 +23,16 @@ def get_all_round_hurling_matches():
   return matches
 
 
-def get_all_round_hurling_fixtures():
-  return Fixture.objects.all().exclude(
-      Q(fixture_round='Q') | Q(fixture_round='S') | Q(
-          fixture_round='F') | Q(sport='F')
-  ).order_by('fixture_round')
+def get_all_round_fixtures():
+  return Fixture.objects.all().exclude(Q(fixture_round='F')).order_by('fixture_round')
+
+
+def get_all_round_fixtures_not_played():
+  fixtures = []
+  results = Result.objects.filter(final_result=False)
+  for result in results:
+    fixtures.append(result.fixture)
+  return fixtures
 
 
 def get_scorers_for_result(result):
@@ -36,11 +41,11 @@ def get_scorers_for_result(result):
   return scorers
 
 
-def get_single_entry(entry_id):
+def get_single_instance(Model, instance_id):
   try:
-    entry = Entry.objects.get(id=entry_id)
-    return entry
-  except Entry.DoesNotExist:
+    instance = Model.objects.get(id=instance_id)
+    return instance
+  except Model.DoesNotExist:
     return redirect('gameplay_error_page')
 
 

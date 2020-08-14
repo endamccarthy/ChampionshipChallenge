@@ -52,6 +52,7 @@ else:
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'gameplay.apps.GameplayConfig',
+    'control.apps.ControlConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',

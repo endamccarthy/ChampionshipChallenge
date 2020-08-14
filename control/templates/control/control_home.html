@@ -1,0 +1,61 @@
+{% extends 'gameplay/base.html' %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-6 mb-3">
+    <div class="card card-body">
+      <div class="btn-group btn-group-toggle mb-4" data-toggle="buttons">
+        <label class="btn btn-outline-dark active">
+          <input type="radio" name="options" id="fixtures" checked> Fixtures
+        </label>
+        <label class="btn btn-outline-dark">
+          <input type="radio" name="options" id="results"> Results
+        </label>
+        <label class="btn btn-outline-dark">
+          <input type="radio" name="options" id="players"> Players
+        </label>
+        <label class="btn btn-outline-dark">
+          <input type="radio" name="options" id="entries"> Entries
+        </label>
+      </div>
+      <div class="p-3">
+        <a class="btn btn-success btn-block" href="{% url 'control_add_fixture' %}" role="button">Add New Fixture +</a>
+      </div>
+    </div>
+
+    {% for region in regions %}
+    <div class="card card-body">
+      <h4 class="mb-4">{{ region.label }} Championship</h4>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" style="width: 20%">Round</th>
+            <th scope="col" style="width: 30%">Team A</th>
+            <th scope="col" style="width: 30%">Team B</th>
+            <th scope="col" style="width: 20%"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for fixture in fixtures %}
+          {% if fixture.region == region %}
+          <tr>
+            <td scope="row">
+              {{ fixture.fixture_round }}
+            </td>
+            <td>{{ fixture.team_A.get_name_display }}</td>
+            <td>{{ fixture.team_B.get_name_display }}</td>
+            <td><a class="btn btn-sm btn-outline-warning" href="{% url 'control_edit_fixture' fixture.id %}"
+                role="button">View / Edit</a></td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+
+
+  </div>
+</div>
+
+{% endblock content %}

@@ -25,6 +25,7 @@ from . import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('gameplay.urls')),
+    path('control/', include('control.urls')),
     path('details/', user_views.user_details, name='user_details'),
     path('deactivate/', user_views.deactivate_account, name='deactivate_account'),
 

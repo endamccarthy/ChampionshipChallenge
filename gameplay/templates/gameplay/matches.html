@@ -7,33 +7,21 @@
     {% include 'gameplay/sections/breadcrumbs.html' %}
     {% include 'gameplay/sections/page_heading.html' %}
 
+    {% for region in regions %}
     <div class="card card-body">
-      <h4 class="mb-4">Munster Championship</h4>
+      <h4 class="mb-4">{{ region.label }} Championship</h4>
       <table>
         {% include 'gameplay/sections/table_header_matches.html' %}
         <tbody>
           {% for match in matches %}
-          {% if match.fixture.region == 'M' %}
+          {% if match.fixture.region == region %}
           {% include 'gameplay/sections/table_row_matches.html' %}
           {% endif %}
           {% endfor %}
         </tbody>
       </table>
     </div>
-
-    <div class="card card-body">
-      <h4 class="mb-4">Leinster Championship</h4>
-      <table>
-        {% include 'gameplay/sections/table_header_matches.html' %}
-        <tbody>
-          {% for match in matches %}
-          {% if match.fixture.region == 'L' %}
-          {% include 'gameplay/sections/table_row_matches.html' %}
-          {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+    {% endfor %}
 
   </div>
 </div>

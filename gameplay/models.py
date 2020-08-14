@@ -11,16 +11,13 @@ from users.models import CustomUser
 
 
 class Sport(models.TextChoices):
-  HURLING = 'H', _('Hurling')
-  FOOTBALL = 'F', _('Football')
+  HURLING = 'H', _('Hurling')  # a label is included with all enums
 
 
 class Region(models.TextChoices):
-  CONNACHT = 'C', _('Connacht')
   LEINSTER = 'L', _('Leinster')
   MUNSTER = 'M', _('Munster')
-  ULSTER = 'U', _('Ulster')
-  ALL_IRELAND = 'A', _('All-Ireland')
+  # ALL_IRELAND = 'A', _('All-Ireland')
 
 
 class County(models.TextChoices):
@@ -66,13 +63,6 @@ class Round(models.TextChoices):
   THIRD = '3', _('Third Round')
   FOURTH = '4', _('Fourth Round')
   FIFTH = '5', _('Fifth Round')
-  SIXTH = '6', _('Sixth Round')
-  SEVENTH = '7', _('Seventh Round')
-  EIGHTH = '8', _('Eighth Round')
-  NINTH = '9', _('Ninth Round')
-  TENTH = '10', _('Tenth Round')
-  QUARTER = 'Q', _('Quarter Final')
-  SEMI = 'S', _('Semi Final')
   FINAL = 'F', _('Final')
 
 
@@ -142,7 +132,7 @@ class Fixture(models.Model):
     ]
 
   def clean(self):
-    if (self.fixture_round in ['Q', 'S', 'F']):
+    if self.fixture_round in ['F']:
       fixture_filter_1 = Fixture.objects.filter(
           sport=self.sport,
           region=self.region,
