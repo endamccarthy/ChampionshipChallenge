@@ -1,10 +1,11 @@
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
 from gameplay.models import Fixture, Region
 from gameplay.utils import (get_all_round_fixtures_not_played,
-                            get_single_instance)
+                            get_single_instance, update_datetime_on_form_before_saving)
 
 from .forms import FixtureForm
 
@@ -24,7 +25,8 @@ def control_home(request):
 @login_required
 def control_add_fixture(request):
   if request.method == 'POST':
-    form = FixtureForm(request.POST)
+    updated_request = update_datetime_on_form_before_saving(request.POST)
+    form = FixtureForm(updated_request)
     if form.is_valid():
       form.save()
       messages.success(request, 'Fixture has been added')
@@ -43,7 +45,8 @@ def control_add_fixture(request):
 def control_edit_fixture(request, fixture_id):
   fixture = get_single_instance(Fixture, fixture_id)
   if request.method == 'POST':
-    form = FixtureForm(request.POST, instance=fixture)
+    updated_request = update_datetime_on_form_before_saving(request.POST)
+    form = FixtureForm(updated_request, instance=fixture)
     if form.is_valid():
       form.save()
       messages.success(request, 'Fixture has been updated')

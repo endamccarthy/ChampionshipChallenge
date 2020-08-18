@@ -30,8 +30,9 @@
         <thead>
           <tr>
             <th scope="col" style="width: 20%">Round</th>
-            <th scope="col" style="width: 30%">Team A</th>
-            <th scope="col" style="width: 30%">Team B</th>
+            <th scope="col" style="width: 25%">Team A</th>
+            <th scope="col" style="width: 10%"></th>
+            <th scope="col" style="width: 25%">Team B</th>
             <th scope="col" style="width: 20%"></th>
           </tr>
         </thead>
@@ -43,6 +44,7 @@
               {{ fixture.fixture_round }}
             </td>
             <td>{{ fixture.team_A.get_name_display }}</td>
+            <td>v</td>
             <td>{{ fixture.team_B.get_name_display }}</td>
             <td><a class="btn btn-sm btn-outline-warning" href="{% url 'control_edit_fixture' fixture.id %}"
                 role="button">View / Edit</a></td>

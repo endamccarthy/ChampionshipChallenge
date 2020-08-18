@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Q
 from django.shortcuts import redirect
 
@@ -97,3 +99,11 @@ def update_all_positions():
     else:
       entries[i + 1].position = i + 2
     entries[i + 1].save()
+
+
+def update_datetime_on_form_before_saving(posted_form):
+  # convert datetime from string to datetime object
+  date_time_obj = datetime.strptime(posted_form['datetime'], '%Y-%m-%d %H:%M')
+  updated_form = posted_form.copy()
+  updated_form.update({'datetime': date_time_obj})
+  return updated_form
