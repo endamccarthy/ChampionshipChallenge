@@ -14,7 +14,7 @@ Currently hosted [here](https://www.championshipchallenge.ie/).
 - **Host** - Heroku
 - **DNS** - Blacknight
 - **Static File Hosting** - AWS S3
-- **CI/CD** - TravisCI
+- **CI/CD** - Github -> TravisCI -> Heroku
 - **Editor** - VSCode
 
 ---
