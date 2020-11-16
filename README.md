@@ -18,3 +18,11 @@ Currently hosted [here](https://www.championshipchallenge.ie/).
 - **Editor** - VSCode
 
 ---
+
+Regular users will be able to register and enter the competition. Stripe will be used to accept payments. Rules for the competition can be found on the website.
+
+Admin users will have limited access to some CRUD functionality. They will be able to create and update fixtures, results, players, teams, etc.
+
+There will also be a Superuser who will have full access to the Django admin panel. This user will have full Admin user permissions along with the ability to update user accounts among other things.
+
+There are a number of items in the TODO list for this project such as expanding the entry form to include top scorers and provincial finalists. I hope to pick this up again in early 2021 if I have time!
