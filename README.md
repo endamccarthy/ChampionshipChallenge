@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/endamccarthy/ChampionshipChallenge.svg?branch=production)](https://travis-ci.org/endamccarthy/ChampionshipChallenge)
 
-Currently a ***work in progress*** (~70% complete)
+Currently a ***work in progress***
 
 # Championship Challenge 
 Predict results of the Munster and Leinster hurling championships
